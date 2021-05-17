@@ -1,8 +1,10 @@
 package org.youth.api.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -16,13 +18,16 @@ import javax.persistence.TemporalType;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.youth.api.enumtype.DataState;
+import org.youth.api.enumtype.SexType;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Entity(name = "TB_MEMBER")
+@Entity(name = "MEMBER")
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class MemberEntity {
@@ -31,14 +36,20 @@ public class MemberEntity {
 	@Id
 	private Long id;
 	
+	@Column(length = 20, nullable = false)
 	private String name;
-	private String sex;
+
+	@Enumerated(EnumType.STRING)
+	@Column(length = 5, nullable = false)
+	private SexType sex;
 	
-	@Temporal(value = TemporalType.DATE)
-	private Date birth;
+	@Column(nullable = false)
+	private LocalDate birth;
 	
-	private String phoneNumber1;
-	private String phoneNumber2;
+	@Column(unique = true)
+	private String myPhoneNumber;
+	
+	private String parentsPhoneNumber;
 	private String address;
 	
 	@Lob
