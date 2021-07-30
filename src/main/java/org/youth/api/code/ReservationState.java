@@ -1,4 +1,4 @@
-package org.youth.api.enumtype;
+package org.youth.api.code;
 
 public enum ReservationState {
 	COMPLETE, CANCEL;

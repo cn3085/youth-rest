@@ -1,4 +1,4 @@
-package org.youth.api.config;
+package org.youth.api.config.security;
 
 import java.util.Base64;
 import java.util.Date;

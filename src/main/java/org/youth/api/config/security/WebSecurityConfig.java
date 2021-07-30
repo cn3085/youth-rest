@@ -1,4 +1,4 @@
-package org.youth.api.config;
+package org.youth.api.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -39,7 +39,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.and()
 			.authorizeRequests()
 			.antMatchers("/v1/user/**").permitAll()
-			.antMatchers("/**").hasRole("ADMIN")
+//			.antMatchers("/**").hasRole("ADMIN")
 			.and()
 			.addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
 	}

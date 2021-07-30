@@ -5,16 +5,20 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.hibernate.annotations.Where;
+
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
-@NoArgsConstructor
 @Entity(name = "tb_booking")
-public class BookingEntity {
+@Where(clause = "data_state = 'A'")
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Builder
+public class BookingEntity extends BaseDataEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,11 +26,4 @@ public class BookingEntity {
 	private String roomName;
 	private String userName;
 	
-	@Builder
-	public BookingEntity(long roomId, String roomName, String userName) {
-		super();
-		this.roomId = roomId;
-		this.roomName = roomName;
-		this.userName = userName;
-	}
 }

@@ -1,6 +1,5 @@
 package org.youth.api.entity;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -9,31 +8,30 @@ import java.util.stream.Collectors;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.hibernate.annotations.Where;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.youth.api.enumtype.DataState;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Entity(name = "USER")
-@Getter
+@Entity(name = "admin")
+@Where(clause = "data_state = 'A'")
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 @Builder
-public class UserEntity implements UserDetails {
+public class UserEntity extends BaseDataEntity implements UserDetails {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -51,17 +49,6 @@ public class UserEntity implements UserDetails {
 	@Builder.Default
 	private List<String> roles = new ArrayList<>();
 	
-	@CreatedDate
-	private LocalDateTime createDate;
-	
-	@LastModifiedDate
-	private LocalDateTime updateDate;
-	
-	private LocalDateTime deleteDate;
-
-	@Enumerated(EnumType.STRING)
-	private DataState dataState;
-
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return this.roles.stream()

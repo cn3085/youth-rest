@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+	
+	<property name="PATTERN" value="[%d{yyyy-MM-dd HH:mm:ss}:%-3relative][%thread] %-5level %M %logger{35} - %msg%n" />	
+	<springProperty name="ROOT_PATH" scope="context" source="config.gl_path_root" defaultValue="/"/>
+	
+	<!-- 테스트 단계 콘솔로 로그를 남김 -->
+	<appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<charset>UTF-8</charset>
+			<pattern>${PATTERN}</pattern>
+		</encoder>
+	</appender>
+	
+	
+	<!-- 기본 로그 file appender -->
+	<appender name="basicFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${ROOT_PATH}/logs/server.log</file>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<charset>UTF-8</charset>
+			<pattern>${PATTERN}</pattern>
+		</encoder>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${ROOT_PATH}/logs/%d{yyyyMM}/server.%d{yyyyMMdd}.%i.log</fileNamePattern>
+            <!-- 10MB를 초과하면 새로운 번호를 붙여서 새로운 로그파일 생성. ex) photo_delete.180817.2.log -->
+            <maxFileSize>50MB</maxFileSize>
+            <!-- <maxHistory>60</maxHistory> -->
+        </rollingPolicy>
+	</appender>
+	
+
+	<!-- photo 삭제 스케줄러를 위한 appender -->
+<!-- 	<appender name="scheduleFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${ROOT_PATH}/logs/schedule/photo_delete.log</file>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<charset>UTF-8</charset>
+			<pattern>[%d{yyyy-MM-dd HH:mm:ss}:%-3relative][%thread] %-5level - %msg%n</pattern>
+		</encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${ROOT_PATH}/logs/schedule/%d{yyyyMMdd}/photo_delete.%d{yyyyMM}.%i.log</fileNamePattern>
+            10MB를 초과하면 새로운 번호를 붙여서 새로운 로그파일 생성. ex) photo_delete.180817.2.log
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+	</appender> -->
+	
+	
+	
+ 	<!-- sms를 위한 appender -->
+<!--	<appender name="smsFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${ROOT_PATH}/logs/sms/sms.log</file>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<charset>UTF-8</charset>
+			<pattern>[%d{yyyy-MM-dd HH:mm:ss}:%-3relative][%thread] %-5level - %msg%n</pattern>
+		</encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${ROOT_PATH}/logs/sms/%d{yyyyMMdd}/sms.%d{yyyyMM}.%i.log</fileNamePattern>
+            10MB를 초과하면 새로운 번호를 붙여서 새로운 로그파일 생성. ex) sms.180817.2.log
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+	</appender> -->
+
+	
+	<springProfile name="default | stage">
+<!-- 		<logger name="com.eltov.air.scheduler.photo" level="info" additivity="false">
+			<appender-ref ref="scheduleFileAppender"/>
+		</logger>
+		<logger name="com.eltov.air.api.sms" level="info">
+			<appender-ref ref="smsFileAppender"/>
+		</logger> -->
+ 		<logger name="org.springframework.boot" level="error"></logger>
+		<logger name="org.springframework.web" level="error"></logger>
+		<logger name="org.springframework.security" level="off"></logger>
+		<logger name="java.sql" level="error"></logger>
+		<logger name="jdbc" level="off"></logger>
+		<logger name="jdbc.sqlonly" level="off"></logger>
+		<logger name="jdbc.audit" level="off"></logger>
+		<logger name="jdbc.resultset" level="off"></logger>
+		<logger name="jdbc.sqltiming" level="error"></logger>
+		<logger name="jdbc.resultsettable" level="error"></logger>
+		<logger name="jdbc.connection" level="error"></logger>
+		<root level="info">
+		   <appender-ref ref="basicFileAppender" />
+		</root>
+	</springProfile>
+	
+	
+	
+	<springProfile name="dev | develop | test">	
+		<root level="info">
+		   <appender-ref ref="consoleAppender" />
+		</root>
+		<logger name="org.springframework.boot" level="warn"></logger>
+		<logger name="org.springframework.web" level="debug"></logger>
+		<logger name="org.springframework.security" level="off"></logger>
+		<logger name="java.sql" level="error"></logger>
+		<logger name="jdbc" level="off"></logger>
+		<logger name="jdbc.sqlonly" level="off"></logger>
+		<logger name="jdbc.audit" level="off"></logger>
+		<logger name="jdbc.resultset" level="off"></logger>
+		<logger name="jdbc.sqltiming" level="debug"></logger>
+		<logger name="jdbc.resultsettable" level="debug"></logger>
+		<logger name="jdbc.connection" level="off"></logger>
+	</springProfile>
+	
+	
+</configuration>

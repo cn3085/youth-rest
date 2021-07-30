@@ -1,4 +1,4 @@
-package org.youth.api.enumtype;
+package org.youth.api.code;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -9,5 +9,6 @@ public enum SexType {
 	M("남자"),
 	W("여자");
 	
-	private final String name;
+	private final String value;
+	public String value() { return value; }
 }
