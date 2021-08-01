@@ -2,6 +2,10 @@ package org.youth.api.dto;
 
 import java.time.LocalDate;
 
+import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Lob;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -53,8 +57,28 @@ public class MemberDTO {
 	
 	
 	
+	@NoArgsConstructor
+	@Getter
+	@Setter
 	public static class Details {
 		
+		private Long memberId;
 		
+		private String name;
+		private SexType sex;
+		private LocalDate birth;
+		
+		private String myPhoneNumber;
+		private String parentsPhoneNumber;
+		private String address;
+		
+		private String school;
+		private String grade;
+		
+		private String memo;
+
+		public static Details of(MemberEntity memberDetails) {
+			return MemberMapper.INSTANCE.of(memberDetails);
+		}
 	}
 }

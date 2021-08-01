@@ -34,10 +34,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.httpBasic().disable()
+	        .headers().frameOptions().disable()
+	        .and()
 			.csrf().disable()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			.and()
 			.authorizeRequests()
+            .antMatchers("/h2-console/**").permitAll()
 			.antMatchers("/v1/user/**").permitAll()
 //			.antMatchers("/**").hasRole("ADMIN")
 			.and()

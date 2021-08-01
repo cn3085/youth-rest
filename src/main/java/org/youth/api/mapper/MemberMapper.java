@@ -12,4 +12,6 @@ public interface MemberMapper {
 
 	@Mapping(target = "memberId", ignore = true)
 	MemberEntity toEntity(MemberDTO.Regist regist);
+
+	MemberDTO.Details of(MemberEntity memberDetails);
 }

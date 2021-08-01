@@ -13,6 +13,7 @@ import javax.persistence.Lob;
 
 import org.hibernate.annotations.Where;
 import org.youth.api.code.SexType;
+import org.youth.api.dto.MemberDTO.Details;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -57,5 +58,19 @@ public class MemberEntity extends BaseDataEntity {
 	
 	@Lob
 	private String memo;
+
+	
+	
+	public void updateDetails(Details memberDTO) {
+		this.name = memberDTO.getName();
+		this.sex = memberDTO.getSex();
+		this.birth = memberDTO.getBirth();
+		this.myPhoneNumber = memberDTO.getMyPhoneNumber();
+		this.parentsPhoneNumber = memberDTO.getParentsPhoneNumber();
+		this.address = memberDTO.getAddress();
+		this.school = memberDTO.getSchool();
+		this.grade = memberDTO.getGrade();
+		this.memo = memberDTO.getMemo();
+	}
 
 }
