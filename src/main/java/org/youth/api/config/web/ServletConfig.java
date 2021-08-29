@@ -9,18 +9,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.navercorp.lucy.security.xss.servletfilter.XssEscapeServletFilter;
 
 @Configuration
-public class ServletConfig implements WebMvcConfigurer{
+public class ServletConfig implements WebMvcConfigurer {
 
-	/*
-	 * @Override public void addResourceHandlers(ResourceHandlerRegistry registry) {
-	 * 
-	 * registry.addResourceHandler("/include/**").addResourceLocations("/include/");
-	 * registry.addResourceHandler("/images/**").addResourceLocations("/images/");
-	 * registry.addResourceHandler("/zcommonfiles/**").addResourceLocations(
-	 * "/zcommonfiles/");
-	 * registry.addResourceHandler("/html/**").addResourceLocations("/html/"); }
-	 */
-	
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+
+		registry.addResourceHandler("/**").addResourceLocations("classpath:/static/");
+	}
+
 //	@Bean
 //	public FilterRegistrationBean<MultipartFilter> registrationMultipartFilter(){
 //		FilterRegistrationBean<MultipartFilter> registrationBean = new FilterRegistrationBean<>();
@@ -30,16 +26,16 @@ public class ServletConfig implements WebMvcConfigurer{
 //		
 //		return registrationBean;
 //	}
-	
+
 	@Bean
-	public FilterRegistrationBean<XssEscapeServletFilter> getFilterRegistrationBean(){
-		
+	public FilterRegistrationBean<XssEscapeServletFilter> getFilterRegistrationBean() {
+
 		FilterRegistrationBean<XssEscapeServletFilter> registrationBean = new FilterRegistrationBean<>();
 		registrationBean.setFilter(new XssEscapeServletFilter());
 		registrationBean.setOrder(1);
-		registrationBean.addUrlPatterns("/*"); 
-		
+		registrationBean.addUrlPatterns("/*");
+
 		return registrationBean;
 	}
-	
+
 }

@@ -1,0 +1,59 @@
+/*
+* Noto Sans KR (korean) http://www.google.com/font/earlyaccess
+ */
+ 
+ @font-face {
+    font-family: 'Noto Sans KR';
+    font-style: normal;
+    font-weight: 100;
+    src: url(/font/NotoSansKr/NotoSansKR-Thin.woff2) format('woff2'),
+         url(/font/NotoSansKr/NotoSansKR-Thin.woff) format('woff'),
+         url(/font/NotoSansKr/NotoSansKR-Thin.otf) format('opentype');
+  }
+  @font-face {
+    font-family: 'Noto Sans KR';
+    font-style: normal;
+    font-weight: 300;
+    src: url(/font/NotoSansKr/NotoSansKR-Light.woff2) format('woff2'),
+         url(/font/NotoSansKr/NotoSansKR-Light.woff) format('woff'),
+         url(/font/NotoSansKr/NotoSansKR-Light.otf) format('opentype');
+  }
+  @font-face {
+     font-family: 'Noto Sans KR';
+     font-style: normal;
+     font-weight: 400;
+     src: url(/font/NotoSansKr/NotoSansKR-Regular.woff2) format('woff2'),
+          url(/font/NotoSansKr/NotoSansKR-Regular.woff) format('woff'),
+          url(/font/NotoSansKr/NotoSansKR-Regular.otf) format('opentype');
+   }
+  @font-face {
+     font-family: 'Noto Sans KR';
+     font-style: normal;
+     font-weight: 500;
+     src: url(/font/NotoSansKr/NotoSansKR-Medium.woff2) format('woff2'),
+          url(/font/NotoSansKr/NotoSansKR-Medium.woff) format('woff'),
+          url(/font/NotoSansKr/NotoSansKR-Medium.otf) format('opentype');
+   }
+  @font-face {
+     font-family: 'Noto Sans KR';
+     font-style: normal;
+     font-weight: 700;
+     src: url(/font/NotoSansKr/NotoSansKR-Bold.woff2) format('woff2'),
+          url(/font/NotoSansKr/NotoSansKR-Bold.woff) format('woff'),
+          url(/font/NotoSansKr/NotoSansKR-Bold.otf) format('opentype');
+   }
+  @font-face {
+     font-family: 'Noto Sans KR';
+     font-style: normal;
+     font-weight: 900;
+     src: url(/font/NotoSansKr/NotoSansKR-Black.woff2) format('woff2'),
+          url(/font/NotoSansKr/NotoSansKR-Black.woff) format('woff'),
+          url(/font/NotoSansKr/NotoSansKR-Black.otf) format('opentype');
+   } 
+   
+   
+   
+  body,h1,h2,h3,h4,h5,h6,li,a,textarea,button,strong,label,input,th  {
+       font-family:'Noto Sans KR', 고딕, san-serif, IcoMoon,dashicons, FontAwesome!important;
+          color: #4c4c4e;
+     }

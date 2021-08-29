@@ -11,6 +11,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -29,11 +30,24 @@ import lombok.extern.slf4j.Slf4j;
 public class RestExceptionAdvice {
 	
 	
+	@ExceptionHandler(UsernameNotFoundException.class)
+	public ResponseEntity<ResponseDTO> UsernameNotFoundException(HttpServletRequest request,
+																HttpServletResponse response,
+																Object handler,
+																Exception exception) {
+
+			return new ResponseEntity<>(ResponseDTO.builder()
+												   .code(ResponseCode.FAIL)
+												   .message(exception.getMessage())
+											   	   .build(), HttpStatus.OK);
+	}
+	
+	
 	@ExceptionHandler(IllegalStateException.class)
 	public ResponseEntity<ResponseDTO> illegalStateExceptionHandle(HttpServletRequest request,
-													HttpServletResponse response,
-													Object handler,
-													Exception exception) {
+																	HttpServletResponse response,
+																	Object handler,
+																	Exception exception) {
 		
 		return new ResponseEntity<>(ResponseDTO.builder()
 											   .code(ResponseCode.FAIL)

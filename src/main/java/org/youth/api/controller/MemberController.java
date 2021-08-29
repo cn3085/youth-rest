@@ -2,6 +2,9 @@ package org.youth.api.controller;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.youth.api.annotation.valid.ValidPhone;
 import org.youth.api.code.ResponseCode;
 import org.youth.api.dto.MemberDTO;
+import org.youth.api.dto.MemberParam;
 import org.youth.api.dto.ResponseDTO;
 import org.youth.api.service.MemberService;
 
@@ -26,9 +30,16 @@ public class MemberController {
 	
 	private final MemberService memberService;
 	
-	@GetMapping("/all")
-	public ResponseEntity<String> getUser(){
-		return ResponseEntity.ok("hello");
+	@GetMapping
+	public ResponseEntity<ResponseDTO> getUserList(@PageableDefault(page = 0, size = 10) Pageable page,
+												   MemberParam serachParam){
+		
+		Page<MemberDTO.Details> pageContent = memberService.getMembers(page, serachParam);
+		
+		return ResponseEntity.ok(ResponseDTO.builder()
+											.code(ResponseCode.SUCC)
+											.data(pageContent)
+											.build());
 	}
 	
 	
@@ -86,6 +97,7 @@ public class MemberController {
 	@PutMapping("/{memberId}")
 	public ResponseEntity<ResponseDTO> updateMember(@PathVariable Long memberId,
 													@RequestBody MemberDTO.Details memberDTO){
+		
 		memberService.updateMember(memberId, memberDTO);
 		
 		return ResponseEntity.ok(ResponseDTO.builder()

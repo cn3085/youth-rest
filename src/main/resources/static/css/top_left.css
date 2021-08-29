@@ -1,0 +1,88 @@
+#header{
+    background-color: #4c4c4e;
+    position: fixed;
+    width: 100%;
+    top: 0;
+}
+
+.top_logo_box{
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.top_logo_sq{
+    width: 45px;
+    margin: 6px 25px;
+}
+
+.top_logo_name{
+    width: 150px;
+}
+
+#nav{
+    position: fixed;
+    height: 100%;
+    width: 14%;
+    /* border: 1px solid red; */
+    margin-top: 69px;
+}
+
+.main_menu{
+    margin-bottom: 8px;
+    user-select: none;
+}
+
+.main_menu > .title {
+    display: flex;
+    width: 100%;
+    background-color: #ffea71;
+    border-left: 5px solid #ffea71;
+    padding: 11px 15px;
+    justify-content: space-between;
+    opacity: 40%;
+    align-items: center;
+    cursor: pointer;
+}
+
+.main_menu.active_menu > .title {
+    opacity: 100%;
+    background-color: #ffea71;
+    border-left: 5px solid #fbd600;
+}
+.main_menu.active_menu .menu_arrow{
+    transform: rotate(90deg);
+    transition: all ease .7s;
+}
+
+.menu_icon{
+    width: 18px;
+    margin-left: 5px;
+    line-height: 13px;
+}
+
+.menu_name{
+    font-size: 13px;
+    width: 55%;
+}
+
+.menu_arrow{
+    font-weight: bolder;
+}
+
+
+.main_menu .sub_menu{
+    padding-left: 90px;
+    font-size: 12px;
+    max-height: 0px;
+    transition: max-height 1s ease;
+    overflow: hidden;
+}
+
+.main_menu.active_menu .sub_menu{
+    max-height: 100%;
+}
+
+.sub_menu li{
+    margin: 10px 0;
+}

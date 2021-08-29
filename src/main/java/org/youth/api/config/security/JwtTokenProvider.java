@@ -34,11 +34,11 @@ public class JwtTokenProvider {
 		Date now = new Date();
 		
 		return Jwts.builder()
-				.setClaims(claims)
-				.setIssuedAt(now)
-				.setExpiration(new Date(now.getTime() + tokenValidTime))
-				.signWith(SignatureAlgorithm.HS256, secretKey)
-				.compact();
+					.setClaims(claims)
+					.setIssuedAt(now)
+					.setExpiration(new Date(now.getTime() + tokenValidTime))
+					.signWith(SignatureAlgorithm.HS256, secretKey)
+					.compact();
 				
 	}
 	
