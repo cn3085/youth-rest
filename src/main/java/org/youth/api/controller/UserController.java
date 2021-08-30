@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.youth.api.code.ResponseCode;
+import org.youth.api.dto.ResponseDTO;
 import org.youth.api.dto.UserDTO;
 import org.youth.api.service.UserService;
 
@@ -18,16 +20,24 @@ public class UserController {
 	private final UserService userService;
 	
 	@PostMapping("/join")
-	public ResponseEntity<Long> join(@RequestBody UserDTO.UserRequest userRequest) {
+	public ResponseEntity<ResponseDTO> join(@RequestBody UserDTO.UserRequest userRequest) {
 		Long userId = userService.joinUser(userRequest);
-		return ResponseEntity.ok(userId);
+		
+		return ResponseEntity.ok(ResponseDTO.builder()
+											.code(ResponseCode.SUCC)
+											.data(userId)
+											.build());
 	}
 	
 	
 	@PostMapping("/login")
-	public ResponseEntity<String> login(@RequestBody UserDTO.UserRequest userRequest) {
+	public ResponseEntity<ResponseDTO> login(@RequestBody UserDTO.UserRequest userRequest) {
 		String token = userService.login(userRequest);
-		return ResponseEntity.ok(token);
+		
+		return ResponseEntity.ok(ResponseDTO.builder()
+											.code(ResponseCode.SUCC)
+											.data(token)
+											.build());
 	}
 	
 }
