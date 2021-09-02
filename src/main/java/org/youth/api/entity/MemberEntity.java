@@ -41,7 +41,7 @@ public class MemberEntity extends BaseDataEntity {
 	@Column(nullable = false)
 	private LocalDate birth;
 	
-	@Column(length = 15, unique = true, nullable = false)
+	@Column(length = 15, nullable = false)
 	private String myPhoneNumber;
 	
 	@Column(length = 15)

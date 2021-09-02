@@ -80,6 +80,7 @@ public class MemberService{
 
 
 
+	@Transactional(readOnly = true)
 	public Page<MemberDTO.Details> getMembers(Pageable page, MemberParam memberParam) {
 		
 		return memberRepository.searchAll(page, memberParam).map(MemberDTO.Details::of);

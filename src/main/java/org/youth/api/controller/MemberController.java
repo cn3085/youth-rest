@@ -44,7 +44,7 @@ public class MemberController {
 	
 	
 	@PostMapping
-	public ResponseEntity<ResponseDTO> registUser(@Valid MemberDTO.Regist memberDTO){
+	public ResponseEntity<ResponseDTO> registUser(@RequestBody @Valid MemberDTO.Regist memberDTO){
 		
 		memberService.registMember(memberDTO);
 		

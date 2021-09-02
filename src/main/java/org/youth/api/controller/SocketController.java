@@ -2,7 +2,6 @@ package org.youth.api.controller;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 import org.youth.api.dto.BookingDTO;
 import org.youth.api.service.BookingService;
