@@ -1,6 +1,8 @@
 package org.youth.api.entity;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 
 import org.hibernate.annotations.Where;
 import org.youth.api.code.SexType;
@@ -58,6 +61,10 @@ public class MemberEntity extends BaseDataEntity {
 	
 	@Lob
 	private String memo;
+	
+	@Builder.Default
+	@ManyToMany(mappedBy = "members")
+	private List<ReservationEntity> reservations = new ArrayList<>();
 
 	
 	

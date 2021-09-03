@@ -15,25 +15,25 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.youth.api.code.ResponseCode;
-import org.youth.api.dto.ContentsDTO;
-import org.youth.api.dto.ContentsParam;
+import org.youth.api.dto.ReservationDTO;
+import org.youth.api.dto.ReservationParam;
 import org.youth.api.dto.ResponseDTO;
-import org.youth.api.service.ContentsService;
+import org.youth.api.service.ReservationService;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/v1/contents")
-public class ContentsController {
-
-	private final ContentsService contentsService;
+@RequestMapping("/v1/reservations")
+public class ReservationController {
+	
+	private final ReservationService reservationService;
 	
 	@GetMapping
-	public ResponseEntity<ResponseDTO> getContentsList(@PageableDefault(page = 0, size = 20) Pageable page,
-													   ContentsParam searchParam){
+	public ResponseEntity<ResponseDTO> getReservationList(@PageableDefault(page = 0, size = 20) Pageable page,
+													   	  ReservationParam searchParam){
 		
-		Page<ContentsDTO.Details> pageContent = contentsService.getContents(page, searchParam);
+		Page<ReservationDTO.Details> pageContent = reservationService.getReservation(page, searchParam);
 		
 		return ResponseEntity.ok(ResponseDTO.builder()
 											.code(ResponseCode.SUCC)
@@ -44,22 +44,22 @@ public class ContentsController {
 	
 	
 	@PostMapping
-	public ResponseEntity<ResponseDTO> registContents(@RequestBody @Valid ContentsDTO.Regist contentsDTO){
+	public ResponseEntity<ResponseDTO> registReservation(@RequestBody @Valid ReservationDTO.Regist reservationDTO){
 		
-		contentsService.registContents(contentsDTO);
+		reservationService.registReservation(reservationDTO);
 		
 		return ResponseEntity.ok(ResponseDTO.builder()
 											.code(ResponseCode.SUCC)
-											.message("컨텐츠를 등록했습니다.")
+											.message("예약이 등록되었습니다.")
 											.build());
 	}
 	
 	
 	
-	@GetMapping("/{contentsId}")
-	public ResponseEntity<ResponseDTO> getThisContents(@PathVariable Long contentsId){
+	@GetMapping("/{reservationId}")
+	public ResponseEntity<ResponseDTO> getThisReservation(@PathVariable Long reservationId){
 		
-		ContentsDTO.Details memberDTO = ContentsDTO.Details.of(contentsService.getContentsDetails(contentsId));
+		ReservationDTO.Details memberDTO = ReservationDTO.Details.of(reservationService.getReservationDetails(reservationId));
 		
 		return ResponseEntity.ok(ResponseDTO.builder()
 											.data(memberDTO)
@@ -69,10 +69,10 @@ public class ContentsController {
 	
 	
 	
-	@DeleteMapping("/{contentsId}")
-	public ResponseEntity<ResponseDTO> deleteContents(@PathVariable Long contentsId){
+	@DeleteMapping("/{reservationId}")
+	public ResponseEntity<ResponseDTO> deleteReservation(@PathVariable Long reservationId){
 		
-		contentsService.deleteContents(contentsId);
+		reservationService.deleteReservation(reservationId);
 		
 		return ResponseEntity.ok(ResponseDTO.builder()
 											.code(ResponseCode.SUCC)
@@ -81,11 +81,11 @@ public class ContentsController {
 	
 	
 	
-	@PutMapping("/{contentsId}")
-	public ResponseEntity<ResponseDTO> updateContents(@PathVariable Long contentsId,
-													@RequestBody @Valid ContentsDTO.Details contentsDTO){
+	@PutMapping("/{reservationId}")
+	public ResponseEntity<ResponseDTO> updateReservation(@PathVariable Long reservationId,
+													@RequestBody @Valid ReservationDTO.Details reservationDTO){
 		
-		contentsService.updateContents(contentsId, contentsDTO);
+		reservationService.updateReservation(reservationId, reservationDTO);
 		
 		return ResponseEntity.ok(ResponseDTO.builder()
 											.code(ResponseCode.SUCC)
