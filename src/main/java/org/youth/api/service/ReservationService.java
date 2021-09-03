@@ -40,6 +40,9 @@ public class ReservationService {
 		
 		ReservationEntity reservation = reservationDTO.toEntity();
 		reservationRepository.save(reservation);
+		
+		//1. 이 컨텐츠가 현재 시간에 예약되어 있는지
+		//2. 이 컨텐츠를 이용하는 사람이 현재 다른 컨텐츠를 이용 중인지
 	}
 
 
@@ -58,6 +61,21 @@ public class ReservationService {
 		
 		ReservationEntity reservation = getReservationDetails(reservationId);
 		reservationRepository.delete(reservation);
+	}
+	
+	
+	
+	public void checkPossibleToReservation() {
+		
+		checkAlreadyReservation();
+		checkAnotherContentsReservationMember();
+	}
+
+
+
+	private void checkAlreadyReservation() {
+		reservationRepository.findByContents
+		
 	}
 
 
