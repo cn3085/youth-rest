@@ -76,4 +76,31 @@ public class ReservationDTO {
 			return ReservationMapper.INSTANCE.toEntity(this);
 		}
 	}
+	
+	
+	
+	@NoArgsConstructor
+	@Getter
+	@Setter
+	public static class DoubleBookingRes {
+		
+		private long reservationId;
+		
+		@NotNull
+		@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") 
+		private LocalDateTime startTime;
+		
+		@NotNull
+		@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") 
+		private LocalDateTime endTime;
+		
+		private ReservationState state;
+		
+		private ContentsDTO.Details contents;
+		
+		public static ReservationDTO.DoubleBookingRes of(ReservationEntity reservationDetails) {
+			return ReservationMapper.INSTANCE.ofDoubleBookingRes(reservationDetails);
+		}
+		
+	}
 }

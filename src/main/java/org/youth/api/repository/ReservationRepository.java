@@ -6,4 +6,5 @@ import org.youth.api.entity.ReservationEntity;
 @Repository
 public interface ReservationRepository extends SoftDeleteRepositoryAdapter<ReservationEntity, Long>, ReservationCustomRepository {
 
+
 }

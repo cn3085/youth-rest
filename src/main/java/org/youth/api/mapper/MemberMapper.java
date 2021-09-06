@@ -14,4 +14,6 @@ public interface MemberMapper {
 	MemberEntity toEntity(MemberDTO.Regist regist);
 
 	MemberDTO.Details of(MemberEntity memberDetails);
+	
+	MemberDTO.DoubleBookingRes ofDoubleBooking(MemberEntity memberDetails);
 }

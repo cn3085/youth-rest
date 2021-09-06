@@ -18,4 +18,6 @@ public interface ReservationMapper {
 
 	ReservationDTO.Details of(ReservationEntity reservationDetails);
 	
+	ReservationDTO.DoubleBookingRes ofDoubleBookingRes(ReservationEntity reservationDetails);
+	
 }

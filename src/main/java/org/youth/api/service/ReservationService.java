@@ -1,14 +1,22 @@
 package org.youth.api.service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.validation.Valid;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.youth.api.dto.MemberDTO;
 import org.youth.api.dto.ReservationDTO;
 import org.youth.api.dto.ReservationParam;
 import org.youth.api.entity.ReservationEntity;
+import org.youth.api.exception.reservation.ContainsAnotherReservationException;
+import org.youth.api.exception.reservation.DoubleBookingException;
 import org.youth.api.repository.ReservationRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -38,11 +46,10 @@ public class ReservationService {
 	@Transactional(rollbackFor = Exception.class)
 	public void registReservation(@Valid ReservationDTO.Regist reservationDTO) {
 		
+		checkPossibleToReservation(reservationDTO);
+		
 		ReservationEntity reservation = reservationDTO.toEntity();
 		reservationRepository.save(reservation);
-		
-		//1. 이 컨텐츠가 현재 시간에 예약되어 있는지
-		//2. 이 컨텐츠를 이용하는 사람이 현재 다른 컨텐츠를 이용 중인지
 	}
 
 
@@ -65,18 +72,60 @@ public class ReservationService {
 	
 	
 	
-	public void checkPossibleToReservation() {
+	public void checkPossibleToReservation(ReservationDTO.Regist reservationDTO) {
 		
-		checkAlreadyReservation();
-		checkAnotherContentsReservationMember();
+		List<ReservationEntity> overwrapReservations = getReservationByTime(reservationDTO.getStartTime(), reservationDTO.getEndTime());
+		
+		checkDoubleBooking(overwrapReservations, reservationDTO.getContents().getContentsId());
+		checkMemberUsingAnotherContetns(overwrapReservations, reservationDTO.getMembers());
+		
+	}
+	
+	
+
+	private List<ReservationEntity> getReservationByTime(LocalDateTime startTime, LocalDateTime endTime) {
+		return reservationRepository.findByReservationTime(startTime, endTime);
 	}
 
 
 
-	private void checkAlreadyReservation() {
-		reservationRepository.findByContents
+	private void checkDoubleBooking(List<ReservationEntity> overwrapReservations, long contentsId) {
+		boolean isDoubleBooking = overwrapReservations.stream().anyMatch( r -> r.getContents().getContentsId().equals(contentsId));
+		
+		if(isDoubleBooking) {
+			throw new DoubleBookingException();
+		}
+	}
+	
+	
+	
+	private void checkMemberUsingAnotherContetns(List<ReservationEntity> overwrapReservations,
+												 List<MemberDTO.Details> memberList) {
+		
+		List<Long> reservationMemberIds = memberList.stream().map(MemberDTO.Details::getMemberId).collect(Collectors.toList());
+		
+		List<MemberDTO.DoubleBookingRes> bannedMemberList = new ArrayList<>();
+		
+		for(ReservationEntity reservation : overwrapReservations) {
+			
+			List<MemberDTO.DoubleBookingRes> anotherUsingMemberList =
+					reservation.getMembers().stream().filter( m ->
+					reservationMemberIds.contains(m.getMemberId())).map( m -> {
+						
+						MemberDTO.DoubleBookingRes bannedMember = new MemberDTO.DoubleBookingRes();
+						bannedMember.setMemberId(m.getMemberId());
+						bannedMember.getReservations().add(ReservationDTO.DoubleBookingRes.of(reservation));
+						
+						return bannedMember;
+					}).collect(Collectors.toList());
+			
+			bannedMemberList.addAll(anotherUsingMemberList);
+		}
+		
+		if(!bannedMemberList.isEmpty()) {
+			throw new ContainsAnotherReservationException(bannedMemberList);
+		}
 		
 	}
-
 
 }

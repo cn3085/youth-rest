@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.youth.api.code.ResponseCode;
 import org.youth.api.dto.ResponseDTO;
 import org.youth.api.exception.member.AlreadyRegistedMemberException;
+import org.youth.api.exception.reservation.ContainsAnotherReservationException;
+import org.youth.api.exception.reservation.DoubleBookingException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,16 +33,47 @@ public class RestExceptionAdvice {
 	
 	
 	@ExceptionHandler(UsernameNotFoundException.class)
-	public ResponseEntity<ResponseDTO> UsernameNotFoundException(HttpServletRequest request,
+	public ResponseEntity<ResponseDTO> usernameNotFoundException(HttpServletRequest request,
 																HttpServletResponse response,
 																Object handler,
 																Exception exception) {
 
-			return new ResponseEntity<>(ResponseDTO.builder()
-												   .code(ResponseCode.FAIL)
-												   .message(exception.getMessage())
-											   	   .build(), HttpStatus.OK);
+		return new ResponseEntity<>(ResponseDTO.builder()
+											   .code(ResponseCode.FAIL)
+											   .message(exception.getMessage())
+										   	   .build(), HttpStatus.OK);
 	}
+	
+	
+	
+	@ExceptionHandler(ContainsAnotherReservationException.class)
+	public ResponseEntity<ResponseDTO> containsAnotherReservationException(
+																HttpServletRequest request,
+																HttpServletResponse response,
+																Object handler,
+																ContainsAnotherReservationException exception) {
+		
+		return new ResponseEntity<>(ResponseDTO.builder()
+											   .code(ResponseCode.FAIL)
+											   .message(exception.getMessage())
+											   .data(exception.getBannedMemberList())
+										   	   .build(), HttpStatus.OK);
+	}
+	
+	
+	
+	@ExceptionHandler(DoubleBookingException.class)
+	public ResponseEntity<ResponseDTO> doubleBookingException(HttpServletRequest request,
+																HttpServletResponse response,
+																Object handler,
+																Exception exception) {
+		
+		return new ResponseEntity<>(ResponseDTO.builder()
+												.code(ResponseCode.FAIL)
+												.message(exception.getMessage())
+												.build(), HttpStatus.OK);
+	}
+	
 	
 	
 	@ExceptionHandler(IllegalStateException.class)
@@ -65,6 +98,7 @@ public class RestExceptionAdvice {
 											   .data(getResultMessage(exception.getBindingResult().getFieldErrors().iterator()))
 											   .build(), HttpStatus.OK);
     }
+	
 	
 	
 	protected List<InvalidParam> getResultMessage(final Iterator<FieldError> errorIterator) {
