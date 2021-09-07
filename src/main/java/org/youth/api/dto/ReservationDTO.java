@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
-import org.springframework.format.annotation.DateTimeFormat;
 import org.youth.api.code.ReservationState;
 import org.youth.api.entity.ReservationEntity;
 import org.youth.api.mapper.ReservationMapper;

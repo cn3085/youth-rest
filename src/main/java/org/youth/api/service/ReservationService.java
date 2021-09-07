@@ -57,6 +57,8 @@ public class ReservationService {
 	@Transactional(rollbackFor = Exception.class)
 	public void updateReservation(long reservationId, @Valid ReservationDTO.Details reservationDTO) {
 		
+		checkPossibleToReservation(reservationDTO);
+		
 		ReservationEntity reservation = reservationDTO.toEntity();
 		reservationRepository.save(reservation);
 	}
@@ -68,6 +70,17 @@ public class ReservationService {
 		
 		ReservationEntity reservation = getReservationDetails(reservationId);
 		reservationRepository.delete(reservation);
+	}
+	
+	
+	
+	public void checkPossibleToReservation(ReservationDTO.Regist reservationDTO) {
+		
+		List<ReservationEntity> overwrapReservations = getReservationByTime(reservationDTO.getStartTime(), reservationDTO.getEndTime());
+		
+		checkDoubleBooking(overwrapReservations, reservationDTO.getContents().getContentsId());
+		checkMemberUsingAnotherContetns(overwrapReservations, reservationDTO.getMembers());
+		
 	}
 	
 	

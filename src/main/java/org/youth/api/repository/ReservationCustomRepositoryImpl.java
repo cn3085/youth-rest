@@ -48,9 +48,13 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
 	
 	
 	private BooleanExpression overwrapTime(LocalDateTime startTime, LocalDateTime endTime) {
-		return (reservationEntity.startTime.loe(startTime).and(reservationEntity.endTime.after(startTime)))
+		return (reservationEntity.startTime.goe(startTime).and(reservationEntity.endTime.loe(endTime)))
 				.or(
-			   (reservationEntity.startTime.goe(startTime).and(reservationEntity.endTime.before(endTime))));
+			   (reservationEntity.startTime.before(startTime).and(reservationEntity.endTime.after(endTime))))
+				.or(
+			   (reservationEntity.startTime.before(startTime).and(reservationEntity.endTime.after(startTime))))
+				.or(
+			   (reservationEntity.startTime.before(endTime).and(reservationEntity.endTime.after(endTime))));
 		//시작시간이 예약의 시작시간보다 작거나 같으면서
 		//끝나는 시간이 예약의 시작시간보다 큰 것
 		//or
