@@ -33,8 +33,10 @@ public class ReservationDTO {
 		
 		private ReservationState state;
 		
+		@NotNull
 		private ContentsDTO.Details contents;
 		
+		@NotNull
 		private List<MemberDTO.Details> members = new ArrayList<>();
 		
 		
@@ -62,8 +64,10 @@ public class ReservationDTO {
 		
 		private ReservationState state;
 		
+		@NotNull
 		private ContentsDTO.Details contents;
 		
+		@NotNull
 		private List<MemberDTO.Details> members = new ArrayList<>();
 		
 		

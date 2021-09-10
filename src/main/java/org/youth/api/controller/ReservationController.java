@@ -81,11 +81,10 @@ public class ReservationController {
 	
 	
 	
-	@PutMapping("/{reservationId}")
-	public ResponseEntity<ResponseDTO> updateReservation(@PathVariable Long reservationId,
-													@RequestBody @Valid ReservationDTO.Details reservationDTO){
+	@PutMapping
+	public ResponseEntity<ResponseDTO> updateReservation(@RequestBody @Valid ReservationDTO.Details reservationDTO){
 		
-		reservationService.updateReservation(reservationId, reservationDTO);
+		reservationService.updateReservation(reservationDTO);
 		
 		return ResponseEntity.ok(ResponseDTO.builder()
 											.code(ResponseCode.SUCC)

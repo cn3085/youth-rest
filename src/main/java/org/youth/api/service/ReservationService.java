@@ -44,20 +44,20 @@ public class ReservationService {
 	
 	
 	@Transactional(rollbackFor = Exception.class)
-	public void registReservation(@Valid ReservationDTO.Regist reservationDTO) {
+	public ReservationEntity registReservation(@Valid ReservationDTO.Regist reservationDTO) {
 		
 		checkPossibleToReservation(reservationDTO);
 		
 		ReservationEntity reservation = reservationDTO.toEntity();
-		reservationRepository.save(reservation);
+		return reservationRepository.save(reservation);
 	}
 
 
 	
 	@Transactional(rollbackFor = Exception.class)
-	public void updateReservation(long reservationId, @Valid ReservationDTO.Details reservationDTO) {
+	public void updateReservation(@Valid ReservationDTO.Details reservationDTO) {
 		
-		checkPossibleToReservation(reservationDTO);
+		checkPossibleChangeReservationTime(reservationDTO);
 		
 		ReservationEntity reservation = reservationDTO.toEntity();
 		reservationRepository.save(reservation);
@@ -85,9 +85,9 @@ public class ReservationService {
 	
 	
 	
-	public void checkPossibleToReservation(ReservationDTO.Regist reservationDTO) {
+	public void checkPossibleChangeReservationTime(ReservationDTO.Details reservationDTO) {
 		
-		List<ReservationEntity> overwrapReservations = getReservationByTime(reservationDTO.getStartTime(), reservationDTO.getEndTime());
+		List<ReservationEntity> overwrapReservations = getReservationByTimeExcludeThis(reservationDTO.getStartTime(), reservationDTO.getEndTime(), reservationDTO.getReservationId());
 		
 		checkDoubleBooking(overwrapReservations, reservationDTO.getContents().getContentsId());
 		checkMemberUsingAnotherContetns(overwrapReservations, reservationDTO.getMembers());
@@ -95,6 +95,12 @@ public class ReservationService {
 	}
 	
 	
+
+	private List<ReservationEntity> getReservationByTimeExcludeThis(LocalDateTime startTime, LocalDateTime endTime, long reservationId) {
+		return reservationRepository.findByReservationTimeExcludeThis(startTime, endTime, reservationId);
+	}
+
+
 
 	private List<ReservationEntity> getReservationByTime(LocalDateTime startTime, LocalDateTime endTime) {
 		return reservationRepository.findByReservationTime(startTime, endTime);

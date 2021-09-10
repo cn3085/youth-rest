@@ -47,6 +47,17 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
 	
 	
 	
+	@Override
+	public List<ReservationEntity> findByReservationTimeExcludeThis(LocalDateTime startTime, LocalDateTime endTime, long reservationId) {
+		return queryFactory.selectFrom(reservationEntity)
+				.where(
+						overwrapTime(startTime, endTime),
+						reservationEntity.reservationId.ne(reservationId))
+				.fetch();
+	}
+	
+	
+	
 	private BooleanExpression overwrapTime(LocalDateTime startTime, LocalDateTime endTime) {
 		return (reservationEntity.startTime.goe(startTime).and(reservationEntity.endTime.loe(endTime)))
 				.or(
@@ -55,11 +66,9 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
 			   (reservationEntity.startTime.before(startTime).and(reservationEntity.endTime.after(startTime))))
 				.or(
 			   (reservationEntity.startTime.before(endTime).and(reservationEntity.endTime.after(endTime))));
-		//시작시간이 예약의 시작시간보다 작거나 같으면서
-		//끝나는 시간이 예약의 시작시간보다 큰 것
-		//or
-		//시작시간이 에약의 시작시간보다 크거나 같으면서
-		//끝나는 시간이 예약의 끝나는 시간보다 작은 것
 	}
+
+
+
 
 }
