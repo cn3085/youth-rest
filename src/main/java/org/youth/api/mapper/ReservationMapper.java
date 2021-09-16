@@ -14,8 +14,9 @@ public interface ReservationMapper {
 	@Mapping(target = "reservationId", ignore = true)
 	ReservationEntity toEntity(ReservationDTO.Regist regist);
 	
-	ReservationEntity toEntity(ReservationDTO.Details regist);
+	ReservationEntity toEntity(ReservationDTO.Details details);
 
+	
 	ReservationDTO.Details of(ReservationEntity reservationDetails);
 	
 	ReservationDTO.DoubleBookingRes ofDoubleBookingRes(ReservationEntity reservationDetails);

@@ -127,6 +127,7 @@ public class RestExceptionAdvice {
 													    Object handler,
 													    Exception exception) {
 		log.error(exception.toString());
+		exception.printStackTrace();
 		
 		return new ResponseEntity<>(ResponseDTO.builder()
 												.message("요청을 처리하지 못했습니다. 잠시 후 다시 시도해주십시오.")

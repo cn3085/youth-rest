@@ -37,6 +37,8 @@ public class ContentsEntity extends BaseDataEntity {
 	private String description;
 	
 	private boolean enableReservation;
+	
+	private String notice;
 
 	
 	public void updateDetails(Details contentsDTO) {
@@ -45,6 +47,7 @@ public class ContentsEntity extends BaseDataEntity {
 		this.color = contentsDTO.getColor();
 		this.description = contentsDTO.getDescription();
 		this.enableReservation = contentsDTO.isEnableReservation();
+		this.notice = contentsDTO.getNotice();
 		
 	}
 

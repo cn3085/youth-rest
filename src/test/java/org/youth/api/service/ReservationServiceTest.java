@@ -3,6 +3,7 @@ package org.youth.api.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertThrows;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -10,19 +11,25 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.youth.api.config.persistance.QuerydslConfig;
 import org.youth.api.dto.ContentsDTO;
 import org.youth.api.dto.MemberDTO;
 import org.youth.api.dto.ReservationDTO;
+import org.youth.api.entity.ContentsEntity;
+import org.youth.api.entity.MemberEntity;
 import org.youth.api.entity.ReservationEntity;
 import org.youth.api.exception.reservation.ContainsAnotherReservationException;
 import org.youth.api.exception.reservation.DoubleBookingException;
+import org.youth.api.exception.reservation.ReservationRestrictContentsException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,7 +41,57 @@ import lombok.extern.slf4j.Slf4j;
 class ReservationServiceTest {
 
 	@Autowired
-	private ReservationService reservationService;  
+	private ReservationService reservationService;
+	
+	private static ContentsEntity enableContent1;
+	private static ContentsEntity enableContent2;
+	
+	private static ContentsEntity disableContent;
+	
+	private static MemberEntity member1;
+	private static MemberEntity member2;
+	
+	@BeforeEach
+	void beforeAll(@Autowired ContentsService contentsService,
+								 @Autowired MemberService memberService) {
+		
+		ContentsDTO.Regist enableContentDTO1 = new ContentsDTO.Regist();
+		enableContentDTO1.setName("오락실");
+		enableContentDTO1.setEnableReservation(true);
+		enableContentDTO1.setColor("red");
+		
+		ContentsDTO.Regist enableContentDTO2 = new ContentsDTO.Regist();
+		enableContentDTO2.setName("노래방");
+		enableContentDTO2.setEnableReservation(true);
+		enableContentDTO2.setColor("blue");
+		
+		ContentsDTO.Regist disableContentDTO = new ContentsDTO.Regist();
+		disableContentDTO.setName("플스(고장)");
+		disableContentDTO.setEnableReservation(false);
+		disableContentDTO.setNotice("고장났습니다.");;
+		disableContentDTO.setColor("blue");
+		
+		enableContent1 = contentsService.registContents(enableContentDTO1);
+		enableContent2 = contentsService.registContents(enableContentDTO2);
+		
+		disableContent = contentsService.registContents(disableContentDTO);
+		
+		MemberDTO.Regist memberDTO1 = new MemberDTO.Regist();
+		memberDTO1.setName("철수");
+		memberDTO1.setBirth(LocalDate.of(1992, 12, 9));
+		memberDTO1.setMyPhoneNumber("010-9999-9999");
+		
+		MemberDTO.Regist memberDTO2 = new MemberDTO.Regist();
+		memberDTO2.setName("영희");
+		memberDTO2.setBirth(LocalDate.of(2003, 12, 9));
+		memberDTO2.setMyPhoneNumber("010-8888-8888");
+		
+		member1 = memberService.registMember(memberDTO1);
+		member2 = memberService.registMember(memberDTO2);
+		
+	}
+	
+	
 	
 	//1. 예약 시간이 겹치는 경우
 	//1.1. 등록된 예약과 예약 시간이 완전히 겹침
@@ -44,13 +101,13 @@ class ReservationServiceTest {
 		//given
 		ReservationDTO.Regist firstReservation = createReservation(LocalDateTime.of(2021, 9, 7, 10, 0),
 																   LocalDateTime.of(2021, 9, 7, 10, 30),
-																   1,
-																   new Long[]{1L});
+																   enableContent1,
+																   member1); 
 
 		ReservationDTO.Regist secondReservation = createReservation(LocalDateTime.of(2021, 9, 7, 10, 0),
 																	LocalDateTime.of(2021, 9, 7, 10, 30),
-																	1,
-																	new Long[]{1L});
+																	enableContent1,
+																	member2);
 
 		//when
 		reservationService.registReservation(firstReservation);
@@ -73,13 +130,13 @@ class ReservationServiceTest {
 		//given
 		ReservationDTO.Regist firstReservation = createReservation(LocalDateTime.of(2021, 9, 7, 10, 0),
 																   LocalDateTime.of(2021, 9, 7, 10, 30),
-																   1,
-																   new Long[]{1L});
+																   enableContent1,
+																   member1);
 		
 		ReservationDTO.Regist secondReservation = createReservation(LocalDateTime.of(2021, 9, 7, 10, 20),
 																	LocalDateTime.of(2021, 9, 7, 10, 40),
-																	1,
-																	new Long[]{1L});
+																	enableContent1,
+																	member2);
 
 		//when
 		reservationService.registReservation(firstReservation);
@@ -102,13 +159,13 @@ class ReservationServiceTest {
 		//given
 		ReservationDTO.Regist firstReservation = createReservation(LocalDateTime.of(2021, 9, 7, 10, 0),
 																   LocalDateTime.of(2021, 9, 7, 10, 30),
-																   1,
-																   new Long[]{1L});
+																   enableContent1,
+																   member1);
 		
 		ReservationDTO.Regist secondReservation = createReservation(LocalDateTime.of(2021, 9, 7, 9, 50),
 																	LocalDateTime.of(2021, 9, 7, 10, 10),
-																	1,
-																	new Long[]{1L});
+																	enableContent1,
+																	member2);
 
 		//when
 		reservationService.registReservation(firstReservation);
@@ -131,13 +188,13 @@ class ReservationServiceTest {
 		//given
 		ReservationDTO.Regist firstReservation = createReservation(LocalDateTime.of(2021, 9, 7, 10, 0),
 																   LocalDateTime.of(2021, 9, 7, 10, 30),
-																   1,
-																   new Long[]{1L});
+																   enableContent1,
+																   member1);
 		
 		ReservationDTO.Regist secondReservation = createReservation(LocalDateTime.of(2021, 9, 7, 10, 10),
 																	LocalDateTime.of(2021, 9, 7, 10, 20),
-																	1,
-																	new Long[]{1L});
+																	enableContent1,
+																	member2);
 
 		//when
 		reservationService.registReservation(firstReservation);
@@ -160,13 +217,13 @@ class ReservationServiceTest {
 		//given
 		ReservationDTO.Regist firstReservation = createReservation(LocalDateTime.of(2021, 9, 7, 10, 0),
 																   LocalDateTime.of(2021, 9, 7, 10, 30),
-																   1,
-																   new Long[]{1L});
+																   enableContent1,
+																   member1);
 		
 		ReservationDTO.Regist secondReservation = createReservation(LocalDateTime.of(2021, 9, 7, 9, 0),
 																	LocalDateTime.of(2021, 9, 7, 11, 0),
-																	1,
-																	new Long[]{1L});
+																	enableContent1,
+																	member2);
 
 		//when
 		reservationService.registReservation(firstReservation);
@@ -189,13 +246,13 @@ class ReservationServiceTest {
 		//given
 		ReservationDTO.Regist firstReservation = createReservation(LocalDateTime.of(2021, 9, 7, 10, 0),
 																	LocalDateTime.of(2021, 9, 7, 10, 30),
-																	1,
-																	new Long[]{1L});
+																	enableContent1,
+																	member1);
 		
 		ReservationDTO.Regist secondReservation = createReservation(LocalDateTime.of(2021, 9, 7, 10, 0),
 																	LocalDateTime.of(2021, 9, 7, 10, 10),
-																	1,
-																	new Long[]{1L});
+																	enableContent1,
+																	member2);
 		
 		//when
 		reservationService.registReservation(firstReservation);
@@ -218,13 +275,13 @@ class ReservationServiceTest {
 		//given
 		ReservationDTO.Regist firstReservation = createReservation(LocalDateTime.of(2021, 9, 7, 10, 0),
 																	LocalDateTime.of(2021, 9, 7, 10, 30),
-																	1,
-																	new Long[]{1L});
+																	enableContent1,
+																	member1);
 		
 		ReservationDTO.Regist secondReservation = createReservation(LocalDateTime.of(2021, 9, 7, 10, 0),
 																	LocalDateTime.of(2021, 9, 7, 10, 10),
-																	2,
-																	new Long[]{2L});
+																	enableContent2,
+																	member2);
 		
 		//when
 		reservationService.registReservation(firstReservation);
@@ -245,13 +302,13 @@ class ReservationServiceTest {
 		//given
 		ReservationDTO.Regist firstReservation = createReservation(LocalDateTime.of(2021, 9, 7, 10, 0),
 																	LocalDateTime.of(2021, 9, 7, 10, 30),
-																	1,
-																	new Long[]{1L});
+																	enableContent1,
+																	member1);
 		
 		ReservationDTO.Regist secondReservation = createReservation(LocalDateTime.of(2021, 9, 7, 10, 30),
 																	LocalDateTime.of(2021, 9, 7, 10, 40),
-																	2,
-																	new Long[]{1L, 2L});
+																	enableContent2,
+																	member1, member2);
 		
 		//when
 		reservationService.registReservation(firstReservation);
@@ -268,13 +325,13 @@ class ReservationServiceTest {
 		//given
 		ReservationDTO.Regist firstReservation = createReservation(LocalDateTime.of(2021, 9, 7, 10, 30),
 																	LocalDateTime.of(2021, 9, 7, 10, 40),
-																	1,
-																	new Long[]{1L});
+																	enableContent1,
+																	member1);
 		
 		ReservationDTO.Regist secondReservation = createReservation(LocalDateTime.of(2021, 9, 7, 10, 30),
 																	LocalDateTime.of(2021, 9, 7, 10, 40),
-																	2,
-																	new Long[]{1L, 2L});
+																	enableContent2,
+																	member1, member2);
 		
 		//when
 		reservationService.registReservation(firstReservation);
@@ -285,7 +342,7 @@ class ReservationServiceTest {
 		});
 		
 		assertThat(exception.getBannedMemberList().size()).isEqualTo(1);
-		assertThat(exception.getBannedMemberList().get(0).getMemberId()).isEqualTo(1L);
+		assertThat(exception.getBannedMemberList().get(0).getMemberId()).isEqualTo(member1.getMemberId());
 		
 	}
 	
@@ -298,13 +355,13 @@ class ReservationServiceTest {
 		//given
 		ReservationDTO.Regist firstReservation = createReservation(LocalDateTime.of(2021, 9, 7, 10, 0),
 																	LocalDateTime.of(2021, 9, 7, 10, 30),
-																	1,
-																	new Long[]{1L});
+																	enableContent1,
+																	member1);
 		
 		ReservationDTO.Regist secondReservation = createReservation(LocalDateTime.of(2021, 9, 7, 10, 0),
 																	LocalDateTime.of(2021, 9, 7, 10, 10),
-																	2,
-																	new Long[]{2L});
+																	enableContent2,
+																	member2);
 		
 		//when
 		reservationService.registReservation(firstReservation);
@@ -322,19 +379,46 @@ class ReservationServiceTest {
 		//given
 		ReservationDTO.Regist firstReservation = createReservation(LocalDateTime.of(2021, 9, 7, 10, 0),
 																	LocalDateTime.of(2021, 9, 7, 10, 30),
-																	1,
-																	new Long[]{1L});
+																	enableContent1,
+																	member1);
 		
 		ReservationDTO.Regist secondReservation = createReservation(LocalDateTime.of(2021, 9, 7, 10, 0),
 																	LocalDateTime.of(2021, 9, 7, 10, 10),
-																	2,
-																	new Long[]{2L});
+																	enableContent1,
+																	member1, member2);
 		
 		//when
 		reservationService.registReservation(firstReservation);
 		
 		//then
-		reservationService.registReservation(secondReservation);
+		assertThrows(DoubleBookingException.class, () -> {
+			reservationService.registReservation(secondReservation);
+		});
+	}
+	
+	
+	
+	//3.2. 예약이 제한된 컨텐츠에 예약하는 경우
+	@Test
+	void _3_2예약이_제한된_컨텐츠에_예약하는_경우() {
+		//given
+				ReservationDTO.Regist firstReservation = createReservation(LocalDateTime.of(2021, 9, 7, 10, 0),
+																			LocalDateTime.of(2021, 9, 7, 10, 30),
+																			disableContent,
+																			member1);
+				
+				ReservationDTO.Regist secondReservation = createReservation(LocalDateTime.of(2021, 9, 7, 10, 0),
+																			LocalDateTime.of(2021, 9, 7, 10, 10),
+																			enableContent1,
+																			member1, member2);
+				
+				//when
+				assertThrows(ReservationRestrictContentsException.class, () -> {
+					reservationService.registReservation(firstReservation);
+				});
+				
+				//then
+				reservationService.registReservation(secondReservation);
 	}
 	
 	
@@ -346,22 +430,21 @@ class ReservationServiceTest {
 		
 		//given
 		ReservationDTO.Regist firstReservation = createReservation(LocalDateTime.of(2021, 9, 7, 10, 0),
-																	LocalDateTime.of(2021, 9, 7, 10, 30),
-																	1,
-																	new Long[]{1L});
-		reservationService.registReservation(firstReservation);
+																   LocalDateTime.of(2021, 9, 7, 10, 30),
+																   enableContent1,
+																   member1);
+		ReservationEntity first = reservationService.registReservation(firstReservation);
 		
 		//when
 		ReservationDTO.Details updateReservation = new ReservationDTO.Details();
-		updateReservation.setReservationId(1L);
+		updateReservation.setReservationId(first.getReservationId());
 		updateReservation.setStartTime(LocalDateTime.of(2021, 9, 7, 11, 0));
 		updateReservation.setEndTime(LocalDateTime.of(2021, 9, 7, 11, 30));
 		
-		List<MemberDTO.Details> memberList = firstReservation.getMembers();
+		List<MemberDTO.MemberDetails> memberList = firstReservation.getMembers();
 		memberList.clear();
 		
-		MemberDTO.Details newMember = new MemberDTO.Details();
-		newMember.setMemberId(3L);
+		MemberDTO.MemberDetails newMember = MemberDTO.MemberDetails.of(member2);
 		memberList.add(newMember);
 		
 		updateReservation.setMembers(memberList);
@@ -370,54 +453,33 @@ class ReservationServiceTest {
 		reservationService.updateReservation(updateReservation);
 		
 		//then
-		ReservationEntity reservation = reservationService.getReservationDetails(1L);
+		ReservationEntity reservation = reservationService.getReservationDetails(first.getReservationId());
 		
 		assertThat(reservation.getStartTime()).isEqualTo(updateReservation.getStartTime());
 		assertThat(reservation.getEndTime()).isEqualTo(updateReservation.getEndTime());
 		assertThat(reservation.getMembers()).isNotEmpty();
-		assertThat(reservation.getMembers().get(0).getMemberId()).isEqualTo(3L);
+		assertThat(reservation.getMembers().get(0)).isEqualTo(member2);
 		assertThat(reservation.getContents()).isNotNull();
-		assertThat(reservation.getContents().getContentsId()).isEqualTo(1L);
+		assertThat(reservation.getContents()).isEqualTo(first.getContents());
 		
 	}
 	
 	
 	
-	//4.예약변경
-	//4.2 예약 변경 시간 겹침
-	@Test
-	void _4_2예약변경_실패_시간겹침() {
-		
-	}
 	
 	
-	
-	//4.예약변경
-	//4.2 예약 변경 멤버 중복
-	@Test
-	void _4_3예약변경_실패_멤버중복() {
-		
-	}
-	
-	
-	
-	public static ReservationDTO.Regist createReservation(LocalDateTime startTime, LocalDateTime endTime, long contentsId, Long[] memberIds){
-		
-		ContentsDTO.Details contents = new ContentsDTO.Details();
-		contents.setContentsId(contentsId);
-		
-		List<MemberDTO.Details> memberList = Arrays.asList(memberIds).stream().map( id -> {
-			MemberDTO.Details member = new MemberDTO.Details();
-			member.setMemberId(id);
-			return member;
-		}).collect(Collectors.toList());
+	public static ReservationDTO.Regist createReservation(LocalDateTime startTime, LocalDateTime endTime, ContentsEntity contents, MemberEntity...members){
 		
 		
 		ReservationDTO.Regist reservation = new ReservationDTO.Regist();
 		
+		List<MemberDTO.MemberDetails> memberList = Arrays.asList(members)
+														 .stream()
+														 .map( m -> MemberDTO.MemberDetails.of(m)).collect(Collectors.toList());
+		
 		reservation.setStartTime(startTime);
 		reservation.setEndTime(endTime);
-		reservation.setContents(contents);
+		reservation.setContents(ContentsDTO.Details.of(contents));
 		reservation.setMembers(memberList);
 		
 		return reservation;

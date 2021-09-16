@@ -18,6 +18,9 @@ import org.hibernate.annotations.Where;
 import org.youth.api.code.SexType;
 import org.youth.api.dto.MemberDTO.Details;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,6 +28,7 @@ import lombok.NoArgsConstructor;
 
 @Entity(name = "MEMBER")
 @Where(clause = "data_state = 'A'")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "memberId")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -79,5 +83,6 @@ public class MemberEntity extends BaseDataEntity {
 		this.grade = memberDTO.getGrade();
 		this.memo = memberDTO.getMemo();
 	}
-
+	
+	
 }

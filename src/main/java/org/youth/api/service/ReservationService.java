@@ -11,12 +11,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.youth.api.dto.ContentsDTO;
 import org.youth.api.dto.MemberDTO;
 import org.youth.api.dto.ReservationDTO;
 import org.youth.api.dto.ReservationParam;
+import org.youth.api.entity.ContentsEntity;
 import org.youth.api.entity.ReservationEntity;
 import org.youth.api.exception.reservation.ContainsAnotherReservationException;
 import org.youth.api.exception.reservation.DoubleBookingException;
+import org.youth.api.exception.reservation.ReservationRestrictContentsException;
 import org.youth.api.repository.ReservationRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -26,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 public class ReservationService {
 	
 	private final ReservationRepository reservationRepository;
+	private final ContentsService contentsService;
 
 	
 	@Transactional(readOnly = true)
@@ -76,6 +80,8 @@ public class ReservationService {
 	
 	public void checkPossibleToReservation(ReservationDTO.Regist reservationDTO) {
 		
+		checkEnableReservationContents(reservationDTO.getContents());
+		
 		List<ReservationEntity> overwrapReservations = getReservationByTime(reservationDTO.getStartTime(), reservationDTO.getEndTime());
 		
 		checkDoubleBooking(overwrapReservations, reservationDTO.getContents().getContentsId());
@@ -86,6 +92,8 @@ public class ReservationService {
 	
 	
 	public void checkPossibleChangeReservationTime(ReservationDTO.Details reservationDTO) {
+		
+		checkEnableReservationContents(reservationDTO.getContents());
 		
 		List<ReservationEntity> overwrapReservations = getReservationByTimeExcludeThis(reservationDTO.getStartTime(), reservationDTO.getEndTime(), reservationDTO.getReservationId());
 		
@@ -105,6 +113,15 @@ public class ReservationService {
 	private List<ReservationEntity> getReservationByTime(LocalDateTime startTime, LocalDateTime endTime) {
 		return reservationRepository.findByReservationTime(startTime, endTime);
 	}
+	
+	
+	
+	private void checkEnableReservationContents(ContentsDTO.Details contentsDTO) {
+		ContentsEntity contents = contentsService.getContentsDetails(contentsDTO.getContentsId());
+		if(!contents.isEnableReservation()) {
+			throw new ReservationRestrictContentsException(contents.getNotice());
+		}
+	}
 
 
 
@@ -119,9 +136,9 @@ public class ReservationService {
 	
 	
 	private void checkMemberUsingAnotherContetns(List<ReservationEntity> overwrapReservations,
-												 List<MemberDTO.Details> memberList) {
+												 List<MemberDTO.MemberDetails> memberList) {
 		
-		List<Long> reservationMemberIds = memberList.stream().map(MemberDTO.Details::getMemberId).collect(Collectors.toList());
+		List<Long> reservationMemberIds = memberList.stream().map(MemberDTO.MemberDetails::getMemberId).collect(Collectors.toList());
 		
 		List<MemberDTO.DoubleBookingRes> bannedMemberList = new ArrayList<>();
 		

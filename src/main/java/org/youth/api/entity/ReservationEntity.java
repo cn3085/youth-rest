@@ -16,6 +16,9 @@ import javax.persistence.ManyToOne;
 import org.hibernate.annotations.Where;
 import org.youth.api.code.ReservationState;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,6 +26,7 @@ import lombok.NoArgsConstructor;
 
 @Entity(name="RESERVATION")
 @Where(clause = "data_state = 'A'")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "reservationId")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -55,4 +59,9 @@ public class ReservationEntity extends BaseDataEntity {
 		member.getReservations().add(this);
 	}
 
+	
+	@Override
+	public String toString() {
+		return "";
+	}
 }

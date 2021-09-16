@@ -1,10 +1,12 @@
 package org.youth.api.repository;
 
+import static org.youth.api.entity.QMemberEntity.memberEntity;
 import static org.youth.api.entity.QReservationEntity.reservationEntity;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +28,13 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
 	public Page<ReservationEntity> searchAll(Pageable pageable, ReservationParam searchParam) {
 		
 		QueryResults<ReservationEntity> result = queryFactory.selectFrom(reservationEntity)
-															//.where()
+															 .join(reservationEntity.members, memberEntity)
+															 .where(
+																	likeContentsName(searchParam.getCName()),
+																	likeMemberName(searchParam.getMName()),
+																	afterStartTime(searchParam.getSdt()),
+																	beforeEndTime(searchParam.getEdt())
+																	 )
 															.offset(pageable.getOffset())
 															.limit(pageable.getPageSize())
 															.orderBy(reservationEntity.regDate.desc())
@@ -67,8 +75,43 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
 				.or(
 			   (reservationEntity.startTime.before(endTime).and(reservationEntity.endTime.after(endTime))));
 	}
-
-
+	
+	
+	
+	private BooleanExpression likeContentsName(String cName) {
+		if(StringUtils.isBlank(cName)) {
+			return null;
+		}
+		return reservationEntity.contents.name.like("%" + cName + "%");
+	}
+	
+	
+	
+	private BooleanExpression likeMemberName(String mName) {
+		
+		if(StringUtils.isBlank(mName)) {
+			return null;
+		}
+		return memberEntity.name.like("%" + mName + "%");
+	}
+	
+	
+	
+	private BooleanExpression afterStartTime(LocalDateTime startDate) {
+		if(startDate == null) {
+			return null;
+		}
+		return reservationEntity.startTime.goe(startDate);
+	}
+	
+	
+	
+	private BooleanExpression beforeEndTime(LocalDateTime endDate) {
+		if(endDate == null) {
+			return null;
+		}
+		return reservationEntity.endTime.loe(endDate);
+	}
 
 
 }

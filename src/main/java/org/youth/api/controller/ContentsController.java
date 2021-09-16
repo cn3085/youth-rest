@@ -83,7 +83,7 @@ public class ContentsController {
 	
 	@PutMapping("/{contentsId}")
 	public ResponseEntity<ResponseDTO> updateContents(@PathVariable Long contentsId,
-													@RequestBody @Valid ContentsDTO.Details contentsDTO){
+													  @RequestBody @Valid ContentsDTO.Details contentsDTO){
 		
 		contentsService.updateContents(contentsId, contentsDTO);
 		

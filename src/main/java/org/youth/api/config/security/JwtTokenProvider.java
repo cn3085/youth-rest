@@ -24,7 +24,7 @@ public class JwtTokenProvider {
 
 	private String secretKey = Base64.getEncoder().encodeToString("YOUTHCAFEAPPLICATION".getBytes());
 	
-	private long tokenValidTime = 30 * 60 * 1000L;
+	private long tokenValidTime = 60 * 60 * 1000L * 24;
 	
 	private final UserDetailsService userDetailService;
 	

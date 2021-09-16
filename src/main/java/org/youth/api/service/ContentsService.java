@@ -28,11 +28,10 @@ public class ContentsService {
 	
 	
 	@Transactional(rollbackFor = Exception.class)
-	public void registContents(ContentsDTO.Regist contentsDTO) {
+	public ContentsEntity registContents(ContentsDTO.Regist contentsDTO) {
 		
 		ContentsEntity contentsEntity = contentsDTO.toEntity();
-		contentsRepository.save(contentsEntity);
-		
+		return contentsRepository.save(contentsEntity);
 	}
 
 
@@ -48,7 +47,6 @@ public class ContentsService {
 	public void deleteContents(long contentsId) {
 		ContentsEntity contents = getContentsDetails(contentsId);
 		contentsRepository.delete(contents);
-		
 	}
 
 
@@ -58,11 +56,7 @@ public class ContentsService {
 		
 		ContentsEntity contents = getContentsDetails(contentsId);
 		contents.updateDetails(contentsDTO);
-		
 	}
-	
-	
-	
 	
 
 }

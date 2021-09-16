@@ -23,12 +23,12 @@ public class MemberService{
 	 
 	
 	@Transactional(rollbackFor = Exception.class)
-	public void registMember(MemberDTO.Regist memberDTO) {
+	public MemberEntity registMember(MemberDTO.Regist memberDTO) {
 		
 		checkAlreadyRegistedPhoneNumber(memberDTO.getMyPhoneNumber());
 		MemberEntity member = memberDTO.toEntity();
 		
-		memberRepository.save(member);
+		return memberRepository.save(member);
 	}
 	
 	

@@ -12,8 +12,6 @@ import lombok.Setter;
 
 public class ContentsDTO {
 	
-	
-
 	@NoArgsConstructor
 	@Getter
 	@Setter
@@ -30,6 +28,8 @@ public class ContentsDTO {
 		
 		@NotNull
 		private boolean enableReservation;
+		
+		private String notice;
 		
 		public ContentsEntity toEntity() {
 			return ContentsMapper.INSTANCE.toEntity(this);
@@ -50,6 +50,8 @@ public class ContentsDTO {
 		private String description;
 		
 		private boolean enableReservation;
+		
+		private String notice;
 		
 		public ContentsEntity toEntity() {
 			return ContentsMapper.INSTANCE.toEntity(this);

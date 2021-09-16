@@ -37,7 +37,7 @@ public class ReservationDTO {
 		private ContentsDTO.Details contents;
 		
 		@NotNull
-		private List<MemberDTO.Details> members = new ArrayList<>();
+		private List<MemberDTO.MemberDetails> members = new ArrayList<>();
 		
 		
 		public ReservationEntity toEntity() {
@@ -68,7 +68,7 @@ public class ReservationDTO {
 		private ContentsDTO.Details contents;
 		
 		@NotNull
-		private List<MemberDTO.Details> members = new ArrayList<>();
+		private List<MemberDTO.MemberDetails> members = new ArrayList<>();
 		
 		
 		public static Details of(ReservationEntity reservationDetails) {
