@@ -13,6 +13,7 @@ public class ReservationParam {
 	
 	private String cName; //contentsName
 	private String mName; //memberName
+	private Long mId;
 	
 //	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) //2021-10-30T15:00:00
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

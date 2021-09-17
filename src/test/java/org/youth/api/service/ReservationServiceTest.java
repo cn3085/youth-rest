@@ -5,6 +5,7 @@ import static org.junit.Assert.assertThrows;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +30,7 @@ import org.youth.api.entity.MemberEntity;
 import org.youth.api.entity.ReservationEntity;
 import org.youth.api.exception.reservation.ContainsAnotherReservationException;
 import org.youth.api.exception.reservation.DoubleBookingException;
+import org.youth.api.exception.reservation.OverTimeUseMemberException;
 import org.youth.api.exception.reservation.ReservationRestrictContentsException;
 
 import lombok.extern.slf4j.Slf4j;
@@ -402,23 +404,50 @@ class ReservationServiceTest {
 	@Test
 	void _3_2예약이_제한된_컨텐츠에_예약하는_경우() {
 		//given
-				ReservationDTO.Regist firstReservation = createReservation(LocalDateTime.of(2021, 9, 7, 10, 0),
-																			LocalDateTime.of(2021, 9, 7, 10, 30),
-																			disableContent,
-																			member1);
-				
-				ReservationDTO.Regist secondReservation = createReservation(LocalDateTime.of(2021, 9, 7, 10, 0),
-																			LocalDateTime.of(2021, 9, 7, 10, 10),
-																			enableContent1,
-																			member1, member2);
-				
-				//when
-				assertThrows(ReservationRestrictContentsException.class, () -> {
-					reservationService.registReservation(firstReservation);
-				});
-				
-				//then
-				reservationService.registReservation(secondReservation);
+		ReservationDTO.Regist firstReservation = createReservation(LocalDateTime.of(2021, 9, 7, 10, 0),
+																	LocalDateTime.of(2021, 9, 7, 10, 30),
+																	disableContent,
+																	member1);
+		
+		ReservationDTO.Regist secondReservation = createReservation(LocalDateTime.of(2021, 9, 7, 10, 0),
+																	LocalDateTime.of(2021, 9, 7, 10, 10),
+																	enableContent1,
+																	member1, member2);
+		
+		//when
+		assertThrows(ReservationRestrictContentsException.class, () -> {
+			reservationService.registReservation(firstReservation);
+		});
+		
+		//then
+		reservationService.registReservation(secondReservation);
+	}
+	
+	
+	
+	@Test
+	void _3_3예약제한시간을_초과한_예약하는_경우() {
+		//given
+		ReservationDTO.Regist firstReservation = createReservation(LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 0)),
+																	LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 50)),
+																	enableContent1,
+																	member1);
+		
+		ReservationDTO.Regist secondReservation = createReservation(LocalDateTime.of(LocalDate.now(), LocalTime.of(11, 0)),
+																	LocalDateTime.of(LocalDate.now(), LocalTime.of(11, 52)),
+																	enableContent1,
+																	member1, member2);
+		
+		//when
+		reservationService.registReservation(firstReservation);
+		
+		OverTimeUseMemberException ex = assertThrows(OverTimeUseMemberException.class, () -> {
+											reservationService.registReservation(secondReservation);
+										});
+		
+		//then
+		assertThat(ex.getOverTimeMembers().size()).isEqualTo(1);
+		assertThat(ex.getOverTimeMembers().get(0).getMemberId()).isEqualTo(member1.getMemberId());
 	}
 	
 	

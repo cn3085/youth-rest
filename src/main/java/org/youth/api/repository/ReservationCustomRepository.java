@@ -11,6 +11,7 @@ import org.youth.api.entity.ReservationEntity;
 public interface ReservationCustomRepository {
 	
 	Page<ReservationEntity> searchAll(Pageable page, ReservationParam searchParam);
+	List<ReservationEntity> searchAll(ReservationParam searchParam);
 	
 	List<ReservationEntity> findByReservationTime(LocalDateTime startTime, LocalDateTime endTime);
 	List<ReservationEntity> findByReservationTimeExcludeThis(LocalDateTime startTime, LocalDateTime endTime, long reservationId);

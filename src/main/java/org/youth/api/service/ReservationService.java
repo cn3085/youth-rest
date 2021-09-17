@@ -1,24 +1,35 @@
 package org.youth.api.service;
 
+import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.youth.api.dto.ContentsDTO;
+import org.youth.api.dto.ContentsDTO.Details;
 import org.youth.api.dto.MemberDTO;
+import org.youth.api.dto.MemberDTO.MemberDetails;
 import org.youth.api.dto.ReservationDTO;
 import org.youth.api.dto.ReservationParam;
 import org.youth.api.entity.ContentsEntity;
 import org.youth.api.entity.ReservationEntity;
 import org.youth.api.exception.reservation.ContainsAnotherReservationException;
 import org.youth.api.exception.reservation.DoubleBookingException;
+import org.youth.api.exception.reservation.OverTimeUseMemberException;
 import org.youth.api.exception.reservation.ReservationRestrictContentsException;
 import org.youth.api.repository.ReservationRepository;
 
@@ -30,12 +41,20 @@ public class ReservationService {
 	
 	private final ReservationRepository reservationRepository;
 	private final ContentsService contentsService;
+	private final SettingService settingService;
 
 	
 	@Transactional(readOnly = true)
 	public Page<ReservationDTO.Details> getReservation(Pageable page, ReservationParam searchParam) {
 		
 		return reservationRepository.searchAll(page, searchParam).map(ReservationDTO.Details::of);
+	}
+	
+	
+	
+	@Transactional(readOnly = true)
+	private List<ReservationEntity> getReservations(ReservationParam param){
+		return reservationRepository.searchAll(param);
 	}
 	
 	
@@ -78,20 +97,21 @@ public class ReservationService {
 	
 	
 	
-	public void checkPossibleToReservation(ReservationDTO.Regist reservationDTO) {
+	private void checkPossibleToReservation(ReservationDTO.Regist reservationDTO) {
 		
 		checkEnableReservationContents(reservationDTO.getContents());
 		
 		List<ReservationEntity> overwrapReservations = getReservationByTime(reservationDTO.getStartTime(), reservationDTO.getEndTime());
 		
 		checkDoubleBooking(overwrapReservations, reservationDTO.getContents().getContentsId());
+		checkMemberOvertimeUseThisContents(reservationDTO.getStartTime(), reservationDTO.getEndTime(), reservationDTO.getContents(), reservationDTO.getMembers());
 		checkMemberUsingAnotherContetns(overwrapReservations, reservationDTO.getMembers());
 		
 	}
+
 	
-	
-	
-	public void checkPossibleChangeReservationTime(ReservationDTO.Details reservationDTO) {
+
+	private void checkPossibleChangeReservationTime(ReservationDTO.Details reservationDTO) {
 		
 		checkEnableReservationContents(reservationDTO.getContents());
 		
@@ -163,5 +183,55 @@ public class ReservationService {
 		}
 		
 	}
+	
+	
+	
+	private void checkMemberOvertimeUseThisContents(LocalDateTime startTime, LocalDateTime endTime, ContentsDTO.Details contents, List<MemberDTO.MemberDetails> members) {
 
+		final long reservationMaxMinute = settingService.getSettingValues().getReservationMaxMinute();
+		final long reservationMinute = Duration.between(startTime.toLocalTime(), endTime.toLocalTime()).toMinutes();
+		ReservationParam param = new ReservationParam();
+		
+		List<MemberDTO.OverTimeUseRes> overTimeUseMembers = new ArrayList<>();
+		
+		for(MemberDTO.MemberDetails member : members) {
+			
+			param.setCName(contents.getName());
+			param.setMId(member.getMemberId());
+			param.setSdt(LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0)));
+			param.setEdt(LocalDateTime.now());
+			
+			List<ReservationEntity> todayReservationForMember = getReservations(param);
+			
+			long useMinute = todayReservationForMember.stream().map( r -> {
+								Duration diff = Duration.between(r.getStartTime().toLocalTime(), r.getEndTime().toLocalTime());
+								return diff.toMinutes();
+							}).reduce(0L, (x, y) -> x + y);
+			
+			long sumMinute = useMinute + reservationMinute;
+			
+			if(reservationMaxMinute < sumMinute ) {
+				MemberDTO.OverTimeUseRes overTimeDTO = new MemberDTO.OverTimeUseRes();
+				
+				overTimeDTO.setMemberId(member.getMemberId());
+				overTimeDTO.setName(member.getName());
+				overTimeDTO.setSex(member.getSex());
+				overTimeDTO.setBirth(member.getBirth());
+				overTimeDTO.setUsedMinute(useMinute);
+				overTimeDTO.setReservationMinute(reservationMinute);
+				
+				overTimeUseMembers.add(overTimeDTO);
+			}
+			
+		}
+		
+		if(!overTimeUseMembers.isEmpty()) {
+			throw new OverTimeUseMemberException(reservationMaxMinute, overTimeUseMembers);
+		}
+	}
+	
+	
+	
+
+	
 }

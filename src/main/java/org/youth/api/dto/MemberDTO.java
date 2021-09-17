@@ -143,4 +143,24 @@ public class MemberDTO {
 			return MemberMapper.INSTANCE.ofDoubleBooking(memberDetails);
 		}
 	}
+	
+	
+	
+	@NoArgsConstructor
+	@Getter
+	@Setter
+	public static class OverTimeUseRes {
+		
+		private Long memberId;
+		private String name;
+		private SexType sex;
+		private LocalDate birth;
+		
+		private long usedMinute;
+		private long reservationMinute;
+		
+		public static MemberDTO.DoubleBookingRes of(MemberEntity memberDetails) {
+			return MemberMapper.INSTANCE.ofDoubleBooking(memberDetails);
+		}
+	}
 }

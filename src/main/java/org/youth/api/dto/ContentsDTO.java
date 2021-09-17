@@ -23,7 +23,6 @@ public class ContentsDTO {
 		@NotBlank
 		private String color;
 		
-		@NotNull
 		private String description;
 		
 		@NotNull
@@ -45,10 +44,14 @@ public class ContentsDTO {
 		
 		private Long contentsId;
 		
+		@NotBlank
 		private String name;
+		
+		@NotBlank
 		private String color;
 		private String description;
 		
+		@NotNull
 		private boolean enableReservation;
 		
 		private String notice;

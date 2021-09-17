@@ -32,6 +32,7 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
 															 .where(
 																	likeContentsName(searchParam.getCName()),
 																	likeMemberName(searchParam.getMName()),
+																	eqMemberId(searchParam.getMId()),
 																	afterStartTime(searchParam.getSdt()),
 																	beforeEndTime(searchParam.getEdt())
 																	 )
@@ -41,6 +42,24 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
 														.fetchResults();
 		
 		return new PageImpl<>(result.getResults(), pageable, result.getTotal());
+	}
+	
+	
+	
+	@Override
+	public List<ReservationEntity> searchAll(ReservationParam searchParam) {
+		
+		return queryFactory.selectFrom(reservationEntity)
+								 .join(reservationEntity.members, memberEntity)
+								 .where(
+										likeContentsName(searchParam.getCName()),
+										likeMemberName(searchParam.getMName()),
+										eqMemberId(searchParam.getMId()),
+										afterStartTime(searchParam.getSdt()),
+										beforeEndTime(searchParam.getEdt())
+										 )
+								.orderBy(reservationEntity.regDate.desc())
+							.fetch();
 	}
 
 	
@@ -86,7 +105,6 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
 	}
 	
 	
-	
 	private BooleanExpression likeMemberName(String mName) {
 		
 		if(StringUtils.isBlank(mName)) {
@@ -95,6 +113,14 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
 		return memberEntity.name.like("%" + mName + "%");
 	}
 	
+	
+	private BooleanExpression eqMemberId(Long mId) {
+		
+		if(mId == null) {
+			return null;
+		}
+		return memberEntity.memberId.eq(mId);
+	}
 	
 	
 	private BooleanExpression afterStartTime(LocalDateTime startDate) {
@@ -105,13 +131,13 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
 	}
 	
 	
-	
 	private BooleanExpression beforeEndTime(LocalDateTime endDate) {
 		if(endDate == null) {
 			return null;
 		}
 		return reservationEntity.endTime.loe(endDate);
 	}
+	
 
 
 }
