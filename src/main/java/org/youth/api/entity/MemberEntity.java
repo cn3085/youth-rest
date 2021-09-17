@@ -43,12 +43,13 @@ public class MemberEntity extends BaseDataEntity {
 	private String name;
 
 	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
 	private SexType sex;
 	
 	@Column(nullable = false)
 	private LocalDate birth;
 	
-	@Column(length = 15, nullable = false)
+	@Column(length = 15)
 	private String myPhoneNumber;
 	
 	@Column(length = 15)

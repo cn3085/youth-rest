@@ -28,13 +28,13 @@ public class MemberDTO {
 		@NotBlank(message = "이름은 필수값입니다.")
 		private String name;
 		
+		@NotNull(message = "성별은 필수값입니다.")
 		private SexType sex;
 		
 		@DateTimeFormat(iso = ISO.DATE)
 		@NotNull(message = "생일은 필수값입니다.")
 		private LocalDate birth;
 
-		@NotBlank(message = "핸드폰 번호는 필수값입니다.")
 		@Pattern(regexp = "^01(?:0|1|[6-9])[.-]?(\\d{3}|\\d{4})[.-]?(\\d{4})$", message = "핸드폰 번호가 형식에 맞지 않습니다. (xxx-xxxx-xxxx)")
 		private String myPhoneNumber;
 		
@@ -85,8 +85,6 @@ public class MemberDTO {
 		
 		private String memo;
 		
-		private List<ReservationDTO.Details> reservations = new ArrayList<>();
-
 		public static Details of(MemberEntity memberDetails) {
 			return MemberMapper.INSTANCE.of(memberDetails);
 		}
