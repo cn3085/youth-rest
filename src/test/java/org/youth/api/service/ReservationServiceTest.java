@@ -12,15 +12,13 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
+import org.youth.api.code.ReservationState;
 import org.youth.api.config.persistance.QuerydslConfig;
 import org.youth.api.dto.ContentsDTO;
 import org.youth.api.dto.MemberDTO;
@@ -428,13 +426,13 @@ class ReservationServiceTest {
 	@Test
 	void _3_3예약제한시간을_초과한_예약하는_경우() {
 		//given
-		ReservationDTO.Regist firstReservation = createReservation(LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 0)),
-																	LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 50)),
+		ReservationDTO.Regist firstReservation = createReservation(LocalDateTime.of(LocalDate.now(), LocalTime.of(9, 0)),
+																	LocalDateTime.of(LocalDate.now(), LocalTime.of(9, 50)),
 																	enableContent1,
 																	member1);
 		
-		ReservationDTO.Regist secondReservation = createReservation(LocalDateTime.of(LocalDate.now(), LocalTime.of(11, 0)),
-																	LocalDateTime.of(LocalDate.now(), LocalTime.of(11, 52)),
+		ReservationDTO.Regist secondReservation = createReservation(LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 0)),
+																	LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 52)),
 																	enableContent1,
 																	member1, member2);
 		
@@ -448,6 +446,83 @@ class ReservationServiceTest {
 		//then
 		assertThat(ex.getOverTimeMembers().size()).isEqualTo(1);
 		assertThat(ex.getOverTimeMembers().get(0).getMemberId()).isEqualTo(member1.getMemberId());
+	}
+	
+	
+	
+	@Test
+	void _3_4취소된예약과_같은시간에_예약하는경우_예약성공() {
+		//given
+		ReservationDTO.Regist firstReservation = createReservation(LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 0)),
+																	LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 50)),
+																	enableContent1,
+																	member1);
+		
+		ReservationDTO.Regist secondReservation = createReservation(LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 0)),
+																	LocalDateTime.of(LocalDate.now(), LocalTime.of(11, 0)),
+																	enableContent1,
+																	member1, member2);
+		
+		//when
+		ReservationEntity first = reservationService.registReservation(firstReservation);
+		first.cancel();
+		
+		
+		//then
+		ReservationEntity second = reservationService.registReservation(secondReservation);
+		
+		assertThat(first.getState()).isEqualTo(ReservationState.CANCEL);
+		assertThat(second.getState()).isEqualTo(ReservationState.OK);
+	}
+	
+	
+	
+	@Test
+	void _3_5하루이용시간에_취소된예약시간은_카운트_안함() {
+		//given
+		ReservationDTO.Regist firstReservation = createReservation(LocalDateTime.of(LocalDate.now(), LocalTime.of(9, 0)),
+																	LocalDateTime.of(LocalDate.now(), LocalTime.of(9, 10)),
+																	enableContent1,
+																	member1);
+		
+		ReservationDTO.Regist secondReservation = createReservation(LocalDateTime.of(LocalDate.now(), LocalTime.of(9, 10)),
+																	LocalDateTime.of(LocalDate.now(), LocalTime.of(9, 20)),
+																	enableContent1,
+																	member1);
+		
+		ReservationDTO.Regist cancelReservation = createReservation(LocalDateTime.of(LocalDate.now(), LocalTime.of(9, 20)),
+																	LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 30)),
+																	enableContent1,
+																	member1);
+		
+		ReservationDTO.Regist fourthReservation = createReservation(LocalDateTime.of(LocalDate.now(), LocalTime.of(9, 20)),
+																	LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 30)),
+																	enableContent1,
+																	member1);
+		
+		
+		ReservationDTO.Regist fiveReservation = createReservation(LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 30)),
+																	LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 40)),
+																	enableContent1,
+																	member1);
+		
+		//when
+		ReservationEntity first = reservationService.registReservation(firstReservation);
+		ReservationEntity second = reservationService.registReservation(secondReservation);
+		ReservationEntity third = reservationService.registReservation(cancelReservation);
+		third.cancel();
+		
+		ReservationEntity fourth = reservationService.registReservation(fourthReservation);
+		
+		
+		
+		//then
+		OverTimeUseMemberException ex = assertThrows(OverTimeUseMemberException.class, () -> {
+			reservationService.registReservation(fiveReservation);
+		});
+
+		assertThat(ex.getOverTimeMembers()).isNotNull().isNotEmpty();
+		assertThat(ex.getOverTimeMembers().get(0).getUsedMinute()).isEqualTo(90);
 	}
 	
 	

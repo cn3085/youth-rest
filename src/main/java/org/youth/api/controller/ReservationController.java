@@ -90,4 +90,17 @@ public class ReservationController {
 											.code(ResponseCode.SUCC)
 											.build());
 	}
+	
+	
+	@PutMapping("/{reservationId}/cancel")
+	public ResponseEntity<ResponseDTO> cancelReservation(@PathVariable Long reservationId){
+		
+		reservationService.cancelReservation(reservationId);
+		
+		return ResponseEntity.ok(ResponseDTO.builder()
+											.code(ResponseCode.SUCC)
+											.message("예약이 취소되었습니다.")
+											.build());
+	}
+	
 }
