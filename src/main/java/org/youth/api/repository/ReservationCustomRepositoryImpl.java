@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.youth.api.code.ReservationState;
 import org.youth.api.dto.ReservationParam;
 import org.youth.api.entity.ReservationEntity;
 
@@ -32,6 +33,7 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
 															 .where(
 																	likeContentsName(searchParam.getCName()),
 																	likeMemberName(searchParam.getMName()),
+																	eqReservationStatus(searchParam.getSt()),
 																	eqMemberId(searchParam.getMId()),
 																	afterStartTime(searchParam.getSdt()),
 																	beforeEndTime(searchParam.getEdt())
@@ -54,6 +56,7 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
 								 .where(
 										likeContentsName(searchParam.getCName()),
 										likeMemberName(searchParam.getMName()),
+										eqReservationStatus(searchParam.getSt()),
 										eqMemberId(searchParam.getMId()),
 										afterStartTime(searchParam.getSdt()),
 										beforeEndTime(searchParam.getEdt())
@@ -68,7 +71,9 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
 	public List<ReservationEntity> findByReservationTime(LocalDateTime startTime, LocalDateTime endTime) {
 		
 		return queryFactory.selectFrom(reservationEntity)
-								.where(overwrapTime(startTime, endTime))
+								.where(
+										reservationEntity.state.eq(ReservationState.OK),
+										overwrapTime(startTime, endTime))
 							.fetch();
 	}
 	
@@ -77,10 +82,11 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
 	@Override
 	public List<ReservationEntity> findByReservationTimeExcludeThis(LocalDateTime startTime, LocalDateTime endTime, long reservationId) {
 		return queryFactory.selectFrom(reservationEntity)
-				.where(
-						overwrapTime(startTime, endTime),
-						reservationEntity.reservationId.ne(reservationId))
-				.fetch();
+								.where(
+										reservationEntity.state.eq(ReservationState.OK),
+										overwrapTime(startTime, endTime),
+										reservationEntity.reservationId.ne(reservationId))
+								.fetch();
 	}
 	
 	
@@ -111,6 +117,15 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
 			return null;
 		}
 		return memberEntity.name.like("%" + mName + "%");
+	}
+	
+	
+	private BooleanExpression eqReservationStatus(ReservationState st) {
+		if(st == null) {
+			return null;
+		}
+		
+		return reservationEntity.state.eq(st); 
 	}
 	
 	

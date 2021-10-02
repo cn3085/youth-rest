@@ -40,7 +40,8 @@ public class ReservationEntity extends BaseDataEntity {
 	private LocalDateTime startTime;
 	private LocalDateTime endTime;
 	
-	private ReservationState state;
+	@Builder.Default
+	private ReservationState state = ReservationState.OK;
 	
 	@ManyToOne
 	@JoinColumn(name="CONTENTS_ID")
@@ -59,9 +60,14 @@ public class ReservationEntity extends BaseDataEntity {
 		member.getReservations().add(this);
 	}
 
+	public void cancel() {
+		this.state = ReservationState.CANCEL;
+	}
 	
 	@Override
 	public String toString() {
 		return "";
 	}
+
+
 }

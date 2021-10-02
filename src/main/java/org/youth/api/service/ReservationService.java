@@ -4,25 +4,19 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.Temporal;
-import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.youth.api.code.ReservationState;
 import org.youth.api.dto.ContentsDTO;
-import org.youth.api.dto.ContentsDTO.Details;
 import org.youth.api.dto.MemberDTO;
-import org.youth.api.dto.MemberDTO.MemberDetails;
 import org.youth.api.dto.ReservationDTO;
 import org.youth.api.dto.ReservationParam;
 import org.youth.api.entity.ContentsEntity;
@@ -118,6 +112,7 @@ public class ReservationService {
 		List<ReservationEntity> overwrapReservations = getReservationByTimeExcludeThis(reservationDTO.getStartTime(), reservationDTO.getEndTime(), reservationDTO.getReservationId());
 		
 		checkDoubleBooking(overwrapReservations, reservationDTO.getContents().getContentsId());
+		checkMemberOvertimeUseThisContents(reservationDTO.getStartTime(), reservationDTO.getEndTime(), reservationDTO.getContents(), reservationDTO.getMembers());
 		checkMemberUsingAnotherContetns(overwrapReservations, reservationDTO.getMembers());
 		
 	}
@@ -198,6 +193,7 @@ public class ReservationService {
 			
 			param.setCName(contents.getName());
 			param.setMId(member.getMemberId());
+			param.setSt(ReservationState.OK);
 			param.setSdt(LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0)));
 			param.setEdt(LocalDateTime.now());
 			
@@ -228,6 +224,16 @@ public class ReservationService {
 		if(!overTimeUseMembers.isEmpty()) {
 			throw new OverTimeUseMemberException(reservationMaxMinute, overTimeUseMembers);
 		}
+	}
+
+
+
+	@Transactional(rollbackFor = Exception.class)
+	public void cancelReservation(long reservationId) {
+		
+		ReservationEntity reservation = getReservationDetails(reservationId);
+		reservation.cancel();
+		
 	}
 	
 	
