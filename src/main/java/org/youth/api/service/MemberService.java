@@ -25,7 +25,7 @@ public class MemberService{
 	@Transactional(rollbackFor = Exception.class)
 	public MemberEntity registMember(MemberDTO.Regist memberDTO) {
 		
-		checkAlreadyRegistedPhoneNumber(memberDTO.getMyPhoneNumber());
+		//checkAlreadyRegistedPhoneNumber(memberDTO.getMyPhoneNumber());
 		MemberEntity member = memberDTO.toEntity();
 		
 		return memberRepository.save(member);
@@ -34,7 +34,8 @@ public class MemberService{
 	
 	
 	@Transactional(readOnly = true)
-	public void checkAlreadyRegistedPhoneNumber(String phoneNumber) {
+	public void checkAlreadyRegistedPhoneNumber(
+			String phoneNumber) {
 		Optional<MemberEntity> member = memberRepository.findByMyPhoneNumber(phoneNumber);
 		
 		if(member.isPresent()) {
@@ -74,7 +75,7 @@ public class MemberService{
 	public void updateMember(long memberId, Details memberDTO) {
 		
 		MemberEntity member = getMemberDetails(memberId);
-		checkAlreadyRegistedPhoneNumber(memberDTO.getMyPhoneNumber(), member);
+		//checkAlreadyRegistedPhoneNumber(memberDTO.getMyPhoneNumber(), member);
 		member.updateDetails(memberDTO);
 	}
 

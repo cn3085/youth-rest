@@ -1,11 +1,14 @@
 package org.youth.api.controller;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,12 +22,14 @@ import org.youth.api.code.ResponseCode;
 import org.youth.api.dto.MemberDTO;
 import org.youth.api.dto.MemberParam;
 import org.youth.api.dto.ResponseDTO;
+import org.youth.api.entity.MemberEntity;
 import org.youth.api.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
+@Validated
 @RequestMapping("/v1/members")
 public class MemberController {
 	
@@ -46,10 +51,11 @@ public class MemberController {
 	@PostMapping
 	public ResponseEntity<ResponseDTO> registUser(@RequestBody @Valid MemberDTO.Regist memberDTO){
 		
-		memberService.registMember(memberDTO);
+		MemberDTO.MemberDetails member = MemberDTO.MemberDetails.of(memberService.registMember(memberDTO));
 		
 		return ResponseEntity.ok(ResponseDTO.builder()
 											.code(ResponseCode.SUCC)
+											.data(member)
 											.message("회원을 등록했습니다.")
 											.build());
 	}
@@ -57,7 +63,11 @@ public class MemberController {
 	
 	
 	@PostMapping("/duplicate-phone")
-	public ResponseEntity<ResponseDTO> duplcatePhone(@ValidPhone String myPhoneNumber){ //TODO: 어노테이션 두개 내포 가능하도록
+	public ResponseEntity<ResponseDTO> duplcatePhone(
+			@NotBlank(message = "핸드폰 번호는 필수값입니다.")
+//			@Pattern(regexp = "^01(?:0|1|[6-9])[.-]?(\\d{3}|\\d{4})[.-]?(\\d{4})$", message = "핸드폰 번호가 형식에 맞지 않습니다. (xxx-xxxx-xxxx)")
+			@Valid
+			String myPhoneNumber){ //TODO: 어노테이션 두개 내포 가능하도록
 		
 		memberService.checkAlreadyRegistedPhoneNumber(myPhoneNumber);
 		
@@ -89,6 +99,7 @@ public class MemberController {
 		
 		return ResponseEntity.ok(ResponseDTO.builder()
 											.code(ResponseCode.SUCC)
+											.message("회원 정보를 삭제했습니다.")
 											.build());
 	}
 	
@@ -102,6 +113,7 @@ public class MemberController {
 		
 		return ResponseEntity.ok(ResponseDTO.builder()
 											.code(ResponseCode.SUCC)
+											.message("회원 정보를 수정했습니다.")
 											.build());
 	}
 	

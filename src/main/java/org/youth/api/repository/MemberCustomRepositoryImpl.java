@@ -82,7 +82,7 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
 	
 	
 	private BooleanExpression likeMyPhoneNumber(String myPhoneNumber) {
-		if(myPhoneNumber == null) {
+		if(StringUtils.isBlank(myPhoneNumber)) {
 			return null;
 		}
 		return memberEntity.myPhoneNumber.like("%" + myPhoneNumber + "%");
@@ -90,7 +90,7 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
 	
 	
 	private BooleanExpression likeParentsPhoneNumber(String parentsPhoneNumber) {
-		if(parentsPhoneNumber == null) {
+		if(StringUtils.isBlank(parentsPhoneNumber)) {
 			return null;
 		}
 		return memberEntity.parentsPhoneNumber.like("%" + parentsPhoneNumber + "%");
@@ -98,7 +98,7 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
 	
 	
 	private BooleanExpression likeAddress(String address) {
-		if(address == null) {
+		if(StringUtils.isBlank(address)) {
 			return null;
 		}
 		return memberEntity.address.like("%" + address + "%");
@@ -106,7 +106,7 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
 	
 	
 	private BooleanExpression likeSchool(String school) {
-		if(school == null) {
+		if(StringUtils.isBlank(school)) {
 			return null;
 		}
 		return memberEntity.school.like("%" + school + "%");
@@ -114,7 +114,7 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
 	
 	
 	private BooleanExpression eqGrade(String grade) {
-		if(grade == null) {
+		if(StringUtils.isBlank(grade)) {
 			return null;
 		}
 		return memberEntity.grade.like("%" + grade + "%");
@@ -122,7 +122,7 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
 	
 
 	private BooleanExpression likeMemo(String memo) {
-		if(memo == null) {
+		if(StringUtils.isBlank(memo)) {
 			return null;
 		}
 		return memberEntity.memo.like("%" + memo + "%");
