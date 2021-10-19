@@ -1,5 +1,7 @@
 package org.youth.api.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.data.domain.Page;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.youth.api.code.ReservationState;
 import org.youth.api.code.ResponseCode;
 import org.youth.api.dto.ReservationDTO;
 import org.youth.api.dto.ReservationParam;
@@ -38,6 +41,21 @@ public class ReservationController {
 		return ResponseEntity.ok(ResponseDTO.builder()
 											.code(ResponseCode.SUCC)
 											.data(pageContent)
+											.build());
+	}
+	
+	
+	
+	@GetMapping("/contents-timeline")
+	public ResponseEntity<ResponseDTO> getReservationList(ReservationParam searchParam){
+		
+		searchParam.setSt(ReservationState.OK);
+		
+		List<ReservationDTO.Details> reservationList = reservationService.getReservationList(searchParam);
+		
+		return ResponseEntity.ok(ResponseDTO.builder()
+											.code(ResponseCode.SUCC)
+											.data(reservationList)
 											.build());
 	}
 	

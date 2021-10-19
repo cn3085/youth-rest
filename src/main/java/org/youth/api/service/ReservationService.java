@@ -18,6 +18,7 @@ import org.youth.api.code.ReservationState;
 import org.youth.api.dto.ContentsDTO;
 import org.youth.api.dto.MemberDTO;
 import org.youth.api.dto.ReservationDTO;
+import org.youth.api.dto.ReservationDTO.Details;
 import org.youth.api.dto.ReservationParam;
 import org.youth.api.entity.ContentsEntity;
 import org.youth.api.entity.ReservationEntity;
@@ -47,6 +48,11 @@ public class ReservationService {
 	
 	
 	@Transactional(readOnly = true)
+	public List<ReservationDTO.Details> getReservationList(ReservationParam searchParam) {
+		return reservationRepository.searchAll(searchParam).stream().map(ReservationDTO.Details::of).collect(Collectors.toList());
+	}
+	
+	
 	private List<ReservationEntity> getReservations(ReservationParam param){
 		return reservationRepository.searchAll(param);
 	}
@@ -235,7 +241,6 @@ public class ReservationService {
 		reservation.cancel();
 		
 	}
-	
 	
 	
 

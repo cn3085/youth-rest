@@ -13,6 +13,7 @@ import lombok.Setter;
 public class ReservationParam {
 	
 	private String cName; //contentsName
+	private Long cId;
 	private String mName; //memberName
 	private Long mId;
 	
