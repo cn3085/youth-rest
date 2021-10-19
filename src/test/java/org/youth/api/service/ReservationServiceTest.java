@@ -33,7 +33,7 @@ import org.youth.api.exception.reservation.ReservationRestrictContentsException;
 
 import lombok.extern.slf4j.Slf4j;
 
-@ActiveProfiles(profiles = "local")
+@ActiveProfiles(profiles = "dev")
 @SpringBootTest
 @Import(QuerydslConfig.class)
 @Slf4j

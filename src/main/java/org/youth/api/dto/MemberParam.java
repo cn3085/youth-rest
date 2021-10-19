@@ -13,26 +13,26 @@ import lombok.Setter;
 @Setter
 public class MemberParam {
 
-	private String nm;
+	private String nm; //이름
 	
-	private SexType st;
-	
-	@DateTimeFormat(iso = ISO.DATE)
-	private LocalDate ab;
+	private SexType st; //성별
 	
 	@DateTimeFormat(iso = ISO.DATE)
-	private LocalDate bb;
+	private LocalDate ab; //생일 시작 검색
 	
-	private String mp;
+	@DateTimeFormat(iso = ISO.DATE)
+	private LocalDate bb; //생일 종료 검색
 	
-	private String pp;
+	private String mp; //폰번호
 	
-	private String adrs;
+	private String pp; //부모님 폰번호
 	
-	private String sch;
+	private String adrs; //주소
 	
-	private String gd;
+	private String sch; //학교
 	
-	private String mm;
+	private String gd; //학년
+	
+	private String mm; //메모
 	
 }
