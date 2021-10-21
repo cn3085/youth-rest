@@ -1,28 +1,25 @@
 package org.youth.api.socket;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.simp.config.MessageBrokerRegistry;
-import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
-import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
-import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
+import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
+
+import lombok.RequiredArgsConstructor;
 
 @Configuration
-@EnableWebSocketMessageBroker
-public class SocketConfig implements WebSocketMessageBrokerConfigurer {
+@EnableWebSocket
+@RequiredArgsConstructor
+public class SocketConfig implements WebSocketConfigurer {
+	
+	private final ReservationWebSocketHandler reservationHandler;
 
 	
 	@Override
-	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		registry.addEndpoint("/webSocket")
-				.setAllowedOriginPatterns("*") //TODO pattern으로
-				.withSockJS();
+	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+		registry.addHandler(reservationHandler, "/websocket/reservation")
+				.setAllowedOrigins("*");
 	}
-	
 
-	@Override
-	public void configureMessageBroker(MessageBrokerRegistry registry) {
-		registry.enableSimpleBroker("/topic", "/queue");
-		registry.setApplicationDestinationPrefixes("/");
-	}
 
 }
