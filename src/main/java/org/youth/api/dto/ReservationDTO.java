@@ -68,6 +68,8 @@ public class ReservationDTO {
 		@NotNull
 		private List<MemberDTO.MemberDetails> members = new ArrayList<>();
 		
+		private LocalDateTime regDate;
+		
 		
 		public static Details of(ReservationEntity reservationDetails) {
 			return ReservationMapper.INSTANCE.of(reservationDetails);

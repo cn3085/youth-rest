@@ -47,6 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.authorizeRequests()
             .antMatchers("/h2-console/**").permitAll()
 			.antMatchers("/v1/user/**").permitAll()
+			.antMatchers("/view/excel/**").permitAll()
 			.antMatchers("/**").hasRole("ADMIN")
 			.and()
 			.addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)

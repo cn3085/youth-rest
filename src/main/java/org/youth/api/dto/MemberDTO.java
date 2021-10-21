@@ -1,6 +1,7 @@
 package org.youth.api.dto;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,6 +85,8 @@ public class MemberDTO {
 		private String grade;
 		
 		private String memo;
+		
+		private LocalDateTime regDate;
 		
 		public static Details of(MemberEntity memberDetails) {
 			return MemberMapper.INSTANCE.of(memberDetails);

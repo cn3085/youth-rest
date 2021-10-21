@@ -3,6 +3,7 @@ package org.youth.api.repository;
 import static org.youth.api.entity.QMemberEntity.memberEntity;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
@@ -26,7 +27,6 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
 	@Override
 	public Page<MemberEntity> searchAll(Pageable pageable, MemberParam searchParam) {
 		
-		
 		QueryResults<MemberEntity> result = queryFactory.selectFrom(memberEntity)
 															.where(
 																likeName(searchParam.getNm()),
@@ -46,6 +46,29 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
 														.fetchResults();
 		
 		return new PageImpl<>(result.getResults(), pageable, result.getTotal());
+	}
+	
+	
+	
+	@Override
+	public List<MemberEntity> searchAll(MemberParam searchParam) {
+		
+		return  queryFactory.selectFrom(memberEntity)
+							.where(
+									likeName(searchParam.getNm()),
+									eqSex(searchParam.getSt()),
+									afterBirth(searchParam.getAb()),
+									beforeBirth(searchParam.getBb()),
+									likeMyPhoneNumber(searchParam.getMp()),
+									likeParentsPhoneNumber(searchParam.getPp()),
+									likeAddress(searchParam.getAdrs()),
+									likeSchool(searchParam.getSch()),
+									eqGrade(searchParam.getGd()),
+									likeMemo(searchParam.getMm())
+									)
+							.orderBy(memberEntity.regDate.desc())
+							.fetch();
+		
 	}
 	
 	

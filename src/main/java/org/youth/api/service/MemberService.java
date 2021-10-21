@@ -1,5 +1,7 @@
 package org.youth.api.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -85,6 +87,14 @@ public class MemberService{
 	public Page<MemberDTO.Details> getMembers(Pageable page, MemberParam memberParam) {
 		
 		return memberRepository.searchAll(page, memberParam).map(MemberDTO.Details::of);
+	}
+
+
+
+	@Transactional(readOnly = true)
+	public List<MemberDTO.Details> getMembers(MemberParam searchParam) {
+		
+		return memberRepository.searchAll(searchParam).stream().map(MemberDTO.Details::of).collect(Collectors.toList()); 
 	}
 
 

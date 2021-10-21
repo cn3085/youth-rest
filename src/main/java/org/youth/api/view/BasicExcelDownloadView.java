@@ -61,10 +61,10 @@ public class BasicExcelDownloadView extends AbstractXlsView {
 		cellStyle.setWrapText(true);
 		/* --------폰트 및 스타일 지정 끝------- */
 		
-		String sheetName = model.get("sheetName").toString();
+		String sheetName = "sheet1";
 		
 		List<ExcelTitleDTO> titleList = (List<ExcelTitleDTO>)model.get("titleList");
-		List<HashMap<String, Object>> excelList = (List<HashMap<String, Object>>)model.get("excelList");
+		List<HashMap<String, Object>> bodyList = (List<HashMap<String, Object>>)model.get("bodyList");
 		
 		Sheet sheet = workbook.createSheet(sheetName);
 		Row row = null;
@@ -83,7 +83,7 @@ public class BasicExcelDownloadView extends AbstractXlsView {
 			sheet.setColumnWidth(i, title.getColumnSize() * 256);
 		}
 		
-		for(HashMap<String, Object> data : excelList) {
+		for(HashMap<String, Object> data : bodyList) {
 			row = sheet.createRow(rowCount++);
 			row.setHeight((short)(37.5*20)); // 20 : 1
 			
