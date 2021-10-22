@@ -20,6 +20,7 @@ import org.youth.api.dto.MemberDTO;
 import org.youth.api.dto.ReservationDTO;
 import org.youth.api.dto.ReservationDTO.Details;
 import org.youth.api.dto.ReservationParam;
+import org.youth.api.dto.StatisticsParam;
 import org.youth.api.entity.ContentsEntity;
 import org.youth.api.entity.ReservationEntity;
 import org.youth.api.exception.reservation.ContainsAnotherReservationException;
@@ -240,6 +241,13 @@ public class ReservationService {
 		ReservationEntity reservation = getReservationDetails(reservationId);
 		reservation.cancel();
 		
+	}
+
+
+
+	public List<MemberDTO.Details> getMostUsedMember(StatisticsParam searchParam) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	
