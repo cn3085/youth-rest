@@ -1,9 +1,11 @@
 package org.youth.api.entity;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -39,6 +41,9 @@ public class ReservationEntity extends BaseDataEntity {
 	
 	private LocalDateTime startTime;
 	private LocalDateTime endTime;
+	
+	@Builder.Default
+	private long useMinute = 0;
 	
 	@Builder.Default
 	private ReservationState state = ReservationState.OK;

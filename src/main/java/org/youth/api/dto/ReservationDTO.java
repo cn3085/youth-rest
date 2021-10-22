@@ -1,5 +1,6 @@
 package org.youth.api.dto;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 public class ReservationDTO {
+	
 
 	@NoArgsConstructor
 	@Getter
@@ -36,6 +38,11 @@ public class ReservationDTO {
 		
 		@NotNull
 		private List<MemberDTO.MemberDetails> members = new ArrayList<>();
+		
+		
+		public long getUseMinute() {
+			return Duration.between(startTime, endTime).toMinutes();
+		}
 		
 		
 		public ReservationEntity toEntity() {
@@ -69,6 +76,11 @@ public class ReservationDTO {
 		private List<MemberDTO.MemberDetails> members = new ArrayList<>();
 		
 		private LocalDateTime regDate;
+		
+		
+		public long getUseMinute() {
+			return Duration.between(startTime, endTime).toMinutes();
+		}
 		
 		
 		public static Details of(ReservationEntity reservationDetails) {
