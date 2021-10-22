@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.youth.api.mybatis.StatisticsMapper">
+
+	<select id="findMostUsedMember" resultType="java.util.HashMap">
+		SELECT
+			TOP 5 COUNT(*) COUNT, M.MEMBER_ID, M.NAME
+		FROM
+			RESERVATION R
+		LEFT OUTER JOIN
+			RESERVATION_MEMBER RM
+		ON
+			R.RESERVATION_ID = RM.RESERVATION_ID
+		LEFT OUTER JOIN
+			MEMBER M
+		ON
+			RM.MEMBER_ID = M.MEMBER_ID
+		WHERE
+			1 = 1
+			<if test='s.sd != null'>
+				<![CDATA[AND R.START_TIME >= #{s.sd}]]>
+			</if>
+			<if test='s.ed != null'>
+				<![CDATA[AND R.START_TIME <= #{s.ed}]]>
+			</if>
+			<if test='s.cid != null and s.cid != 0'>
+				AND CONTENTS_ID = #{s.cid}
+			</if>
+		GROUP BY
+			M.MEMBER_ID, M.NAME
+		ORDER BY
+			COUNT DESC
+	</select>
+</mapper>

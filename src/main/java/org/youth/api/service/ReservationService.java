@@ -243,14 +243,5 @@ public class ReservationService {
 		
 	}
 
-
-
-	public List<MemberDTO.Details> getMostUsedMember(StatisticsParam searchParam) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	
-
 	
 }

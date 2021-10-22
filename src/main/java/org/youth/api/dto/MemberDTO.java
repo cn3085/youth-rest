@@ -166,4 +166,5 @@ public class MemberDTO {
 			return MemberMapper.INSTANCE.ofDoubleBooking(memberDetails);
 		}
 	}
+	
 }
