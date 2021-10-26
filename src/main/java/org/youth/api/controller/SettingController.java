@@ -23,7 +23,7 @@ public class SettingController {
 	private final SettingService settingService;
 	
 	@GetMapping
-	public ResponseEntity<ResponseDTO> getContentsList(){
+	public ResponseEntity<ResponseDTO> getSetting(){
 	
 		SettingDTO setting = SettingDTO.of(settingService.getSettingValues());
 		
@@ -36,12 +36,13 @@ public class SettingController {
 	
 	
 	@PutMapping
-	public ResponseEntity<ResponseDTO> updateContents(@RequestBody @Valid SettingDTO settingDTO){
+	public ResponseEntity<ResponseDTO> updateSetting(@RequestBody @Valid SettingDTO settingDTO){
 			
 		settingService.updateSetting(settingDTO);
 		
 		return ResponseEntity.ok(ResponseDTO.builder()
 											.code(ResponseCode.SUCC)
+											.message("저장했습니다.")
 											.build());
 	}
 
