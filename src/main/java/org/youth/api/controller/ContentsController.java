@@ -46,10 +46,11 @@ public class ContentsController {
 	@PostMapping
 	public ResponseEntity<ResponseDTO> registContents(@RequestBody @Valid ContentsDTO.Regist contentsDTO){
 		
-		contentsService.registContents(contentsDTO);
+		ContentsDTO.Details contents = ContentsDTO.Details.of(contentsService.registContents(contentsDTO));
 		
 		return ResponseEntity.ok(ResponseDTO.builder()
 											.code(ResponseCode.SUCC)
+											.data(contents)
 											.message("컨텐츠를 등록했습니다.")
 											.build());
 	}
@@ -76,6 +77,7 @@ public class ContentsController {
 		
 		return ResponseEntity.ok(ResponseDTO.builder()
 											.code(ResponseCode.SUCC)
+											.message("삭제되었습니다.")
 											.build());
 	}
 	
@@ -89,6 +91,7 @@ public class ContentsController {
 		
 		return ResponseEntity.ok(ResponseDTO.builder()
 											.code(ResponseCode.SUCC)
+											.message("수정되었습니다.")
 											.build());
 	}
 }
