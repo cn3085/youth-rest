@@ -24,6 +24,7 @@ public class UserDTO {
 
 	private String password;
 	
+	@Builder.Default
 	private List<String> roles = new ArrayList<>();
 
 	
