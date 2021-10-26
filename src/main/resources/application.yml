@@ -36,20 +36,19 @@ spring:
       on-profile:
         - dev
   datasource:
-#    driver-class-name: org.h2.Driver
-#    url: jdbc:h2:~/test;AUTO_SERVER=true
     driverClassName: com.p6spy.engine.spy.P6SpyDriver
-    url: jdbc:p6spy:h2:~/test;AUTO_SERVER=true
+    jdbcUrl: jdbc:p6spy:sqlserver://15.165.67.152:1433;DatabaseName=shinsegae_test
+    url: jdbc:p6spy:sqlserver://15.165.67.152:1433;DatabaseName=shinsegae_test
     username: sa
-    password: 
+    password: sellic77&&
 #  datasource:
 #    driverClassName: com.p6spy.engine.spy.P6SpyDriver
 #    url: jdbc:p6spy:sqlserver://localhost:1433;DatabaseName=youth
 #    username: sa
 #    password: sellic77
   jpa:
-#    database: h2
-#    database-platform: org.hibernate.dialect.H2Dialect
+    database: h2
+    database-platform: org.hibernate.dialect.SQLServer2012Dialect
     open-in-view: true
     hibernate:
       ddl-auto: update
@@ -58,7 +57,7 @@ spring:
 #        show_sql: true
 #        format_sql: true
 #        use_sql_comments: true
-        dialect: org.hibernate.dialect.H2Dialect
+        dialect: org.hibernate.dialect.SQLServer2012Dialect
 server:
   port: 8088
 logging:

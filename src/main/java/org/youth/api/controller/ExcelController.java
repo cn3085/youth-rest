@@ -12,11 +12,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.youth.api.dto.ContentsDTO;
+import org.youth.api.dto.ContentsParam;
 import org.youth.api.dto.ExcelTitleDTO;
 import org.youth.api.dto.MemberDTO;
 import org.youth.api.dto.MemberParam;
 import org.youth.api.dto.ReservationDTO;
 import org.youth.api.dto.ReservationParam;
+import org.youth.api.service.ContentsService;
 import org.youth.api.service.MemberService;
 import org.youth.api.service.ReservationService;
 
@@ -28,7 +31,10 @@ import lombok.RequiredArgsConstructor;
 public class ExcelController {
 	
 	private final MemberService memberService;
+	private final ContentsService contentsService;
 	private final ReservationService reservationService;
+	
+	
 	
 	@GetMapping(path = "/members", params = "format=xls")
 	public String downloadMemberList(MemberParam searchParam, Model model) {
@@ -62,6 +68,43 @@ public class ExcelController {
 			body.put("school", m.getSchool());
 			body.put("grade", m.getGrade());
 			body.put("memo", m.getMemo());
+			body.put("regDate", m.getRegDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+			
+			return body;
+		}).collect(Collectors.toList());
+		
+		
+		model.addAttribute("fileName", fileName);
+		model.addAttribute("titleList", titleList);
+		model.addAttribute("bodyList", bodyList);
+		
+		return "BasicExcelDownloadView";
+	}
+	
+	
+	
+	@GetMapping(path = "/contents", params = "format=xls")
+	public String downloadContentsList(ContentsParam searchParam, Model model) {
+		
+		String fileName = "contents_list(" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy_MM_dd")) + ")";
+		
+		List<ContentsDTO.Details> contentsList = contentsService.getContents(searchParam);
+		
+		List<ExcelTitleDTO> titleList = new ArrayList<>();
+		
+		titleList.add(new ExcelTitleDTO("contentsId", "아이디", 10));
+		titleList.add(new ExcelTitleDTO("name", "이름", 10));
+		titleList.add(new ExcelTitleDTO("enableReservation", "예약 가능 여부", 10));
+		titleList.add(new ExcelTitleDTO("description", "설명", 10));
+		titleList.add(new ExcelTitleDTO("regDate", "등록일", 10));
+		
+		
+		List<Map<String, Object>> bodyList = contentsList.stream().map( m -> {
+			Map<String, Object> body = new HashMap<>();
+			body.put("contentsId", m.getContentsId());
+			body.put("name", m.getName());
+			body.put("enableReservation", m.isEnableReservation() ? "가능" : "불가");
+			body.put("description", m.getDescription());
 			body.put("regDate", m.getRegDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 			
 			return body;

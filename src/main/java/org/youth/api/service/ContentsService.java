@@ -1,5 +1,8 @@
 package org.youth.api.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,6 +28,13 @@ public class ContentsService {
 		return contentsRepository.searchAll(page, searchParam).map(ContentsDTO.Details::of);
 	}
 
+	
+	
+	@Transactional(readOnly = true)
+	public List<ContentsDTO.Details> getContents(ContentsParam searchParam) {
+		return contentsRepository.searchAll(searchParam).stream().map(ContentsDTO.Details::of).collect(Collectors.toList());
+	}
+	
 	
 	
 	@Transactional(rollbackFor = Exception.class)
@@ -57,6 +67,6 @@ public class ContentsService {
 		ContentsEntity contents = getContentsDetails(contentsId);
 		contents.updateDetails(contentsDTO);
 	}
-	
+
 
 }

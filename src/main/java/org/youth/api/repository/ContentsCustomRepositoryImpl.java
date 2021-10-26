@@ -2,6 +2,8 @@ package org.youth.api.repository;
 
 import static org.youth.api.entity.QContentsEntity.contentsEntity;
 
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -38,6 +40,21 @@ public class ContentsCustomRepositoryImpl implements ContentsCustomRepository {
 	}
 	
 	
+	
+	@Override
+	public List<ContentsEntity> searchAll(ContentsParam searchParam) {
+		
+		return queryFactory.selectFrom(contentsEntity)
+								.where(
+										likeName(searchParam.getNm()),
+										eqEanableReservation(searchParam.getEr())
+										)
+								.orderBy(contentsEntity.regDate.desc())
+							.fetch();
+	}
+	
+	
+	
 	private BooleanExpression likeName(String name) {
 		if(StringUtils.isBlank(name)) {
 			return null;
@@ -52,4 +69,6 @@ public class ContentsCustomRepositoryImpl implements ContentsCustomRepository {
 		}
 		return contentsEntity.enableReservation.eq(enableReservation);
 	}
+
+	
 }

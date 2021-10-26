@@ -2,7 +2,6 @@ package org.youth.api.controller;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,12 +16,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.youth.api.annotation.valid.ValidPhone;
 import org.youth.api.code.ResponseCode;
 import org.youth.api.dto.MemberDTO;
 import org.youth.api.dto.MemberParam;
 import org.youth.api.dto.ResponseDTO;
-import org.youth.api.entity.MemberEntity;
 import org.youth.api.service.MemberService;
 
 import lombok.RequiredArgsConstructor;

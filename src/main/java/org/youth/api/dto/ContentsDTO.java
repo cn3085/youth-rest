@@ -1,5 +1,7 @@
 package org.youth.api.dto;
 
+import java.time.LocalDateTime;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -55,6 +57,10 @@ public class ContentsDTO {
 		private boolean enableReservation;
 		
 		private String notice;
+		
+		private LocalDateTime regDate;
+		
+		private LocalDateTime updDate;
 		
 		public ContentsEntity toEntity() {
 			return ContentsMapper.INSTANCE.toEntity(this);
