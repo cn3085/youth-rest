@@ -7,6 +7,7 @@ import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.youth.api.entity.UserEntity;
 
 @EnableJpaAuditing
 @Configuration
@@ -21,6 +22,7 @@ public class JpaAuditingConfig implements AuditorAware<String>{
 			return Optional.ofNullable(null);
 		}
 		
-		return Optional.of("admin"); //TODO : awt user로 바꾸기
+		UserEntity user = (UserEntity)authentication.getPrincipal();
+		return Optional.of(user.getUsername());
 	}
 }

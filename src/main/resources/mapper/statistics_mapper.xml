@@ -2,6 +2,16 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.youth.api.mybatis.StatisticsMapper">
 
+	<sql id="whereBetweenDate">
+		1 = 1
+		<if test='s.sd != null'>
+			<![CDATA[AND R.START_TIME >= #{s.sd}]]>
+		</if>
+		<if test='s.ed != null'>
+			<![CDATA[AND R.START_TIME <= #{s.ed}]]>
+		</if>
+	</sql>
+
 	<select id="findMostUsedMember" resultType="java.util.HashMap">
 		SELECT
 			TOP 5 COUNT(*) COUNT, M.MEMBER_ID, M.NAME
@@ -16,13 +26,7 @@
 		ON
 			RM.MEMBER_ID = M.MEMBER_ID
 		WHERE
-			1 = 1
-			<if test='s.sd != null'>
-				<![CDATA[AND R.START_TIME >= #{s.sd}]]>
-			</if>
-			<if test='s.ed != null'>
-				<![CDATA[AND R.START_TIME <= #{s.ed}]]>
-			</if>
+			<include refid="whereBetweenDate"/>
 			<if test='s.cid != null and s.cid != 0'>
 				AND CONTENTS_ID = #{s.cid}
 			</if>
@@ -30,5 +34,53 @@
 			M.MEMBER_ID, M.NAME
 		ORDER BY
 			COUNT DESC
+	</select>
+	
+	
+	<select id="getReservationAverageOfEachContents" resultType="java.util.HashMap">
+		SELECT
+			R.CONTENTS_ID, ROUND(AVG(CONVERT(FLOAT, R.USE_MINUTE)), 1) AVERAGE, C.NAME
+		FROM
+			RESERVATION R
+		LEFT OUTER JOIN
+			CONTENTS C
+		ON
+				R.CONTENTS_ID = C.CONTENTS_ID
+		WHERE
+			<include refid="whereBetweenDate"/>
+			AND
+				R.DATA_STATE = 'A'
+			AND
+				R.STATE = 0
+			AND
+				C.DATA_STATE = 'A'
+		GROUP BY
+			R.CONTENTS_ID, C.NAME
+		ORDER BY
+			AVERAGE DESC
+	</select>
+	
+	
+	<select id="getTotalUseTimeEachContents">
+		SELECT
+			R.CONTENTS_ID, SUM(R.USE_MINUTE) TOTAL, C.NAME
+		FROM
+			RESERVATION R
+		LEFT OUTER JOIN
+			CONTENTS C
+		ON
+			R.CONTENTS_ID = C.CONTENTS_ID
+		WHERE
+			<include refid="whereBetweenDate"/>
+			AND
+				R.DATA_STATE = 'A'
+			AND
+			R.STATE = 0
+			AND
+			C.DATA_STATE = 'A'
+		GROUP BY
+			R.CONTENTS_ID, C.NAME
+		ORDER BY
+			TOTAL DESC
 	</select>
 </mapper>

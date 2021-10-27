@@ -11,4 +11,5 @@ import org.youth.api.dto.StatisticsParam;
 public interface StatisticsMapper {
 	
 	public List<Map<String, Object>> findMostUsedMember(@Param("s") StatisticsParam searchParam);
+	public List<Map<String, Object>> getReservationAverageOfEachContents(@Param("s") StatisticsParam searchParam);
 }
