@@ -1,5 +1,7 @@
 package org.youth.api.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
@@ -41,6 +43,19 @@ public class MemberController {
 		return ResponseEntity.ok(ResponseDTO.builder()
 											.code(ResponseCode.SUCC)
 											.data(pageContent)
+											.build());
+	}
+	
+	
+	
+	@GetMapping("/all")
+	public ResponseEntity<ResponseDTO> getAllUserList(MemberParam serachParam){
+		
+		List<MemberDTO.Details> memberList = memberService.getMembers(serachParam);
+		
+		return ResponseEntity.ok(ResponseDTO.builder()
+											.code(ResponseCode.SUCC)
+											.data(memberList)
 											.build());
 	}
 	

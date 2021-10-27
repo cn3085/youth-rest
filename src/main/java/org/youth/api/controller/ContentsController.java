@@ -1,5 +1,7 @@
 package org.youth.api.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.data.domain.Page;
@@ -38,6 +40,19 @@ public class ContentsController {
 		return ResponseEntity.ok(ResponseDTO.builder()
 											.code(ResponseCode.SUCC)
 											.data(pageContent)
+											.build());
+	}
+	
+	
+	
+	@GetMapping("/all")
+	public ResponseEntity<ResponseDTO> getAllContentsList(ContentsParam searchParam){
+		
+		List<ContentsDTO.Details> contentsList = contentsService.getContents(searchParam);
+		
+		return ResponseEntity.ok(ResponseDTO.builder()
+											.code(ResponseCode.SUCC)
+											.data(contentsList)
 											.build());
 	}
 	
