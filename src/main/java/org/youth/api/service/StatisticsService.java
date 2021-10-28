@@ -17,16 +17,35 @@ public class StatisticsService {
 	
 	private final StatisticsMapper statisticsMapper;
 
-//	@Transactional(readOnly = true)
-//	public List<MemberDTO.Details> getMostUsedMember(StatisticsParam searchParam) {
-//		
-//		return statisticsMapper.getTime();
-//	}
 	
 	@Transactional(readOnly = true)
-	public List<Map<String, Object>> getMostUsedMember(StatisticsParam searchParam) {
+	public List<Map<String, Object>> findMostUsedMember(StatisticsParam searchParam) {
 		
 		return statisticsMapper.findMostUsedMember(searchParam);
+	}
+	
+	
+	
+	@Transactional(readOnly = true)
+	public List<Map<String, Object>> findReservationAverageOfEachContents(StatisticsParam searchParam) {
+		
+		return statisticsMapper.findReservationAverageOfEachContents(searchParam);
+	}
+	
+	
+	
+	@Transactional(readOnly = true)
+	public List<Map<String, Object>> findTotalUseTimeEachContents(StatisticsParam searchParam) {
+		
+		return statisticsMapper.findTotalUseTimeEachContents(searchParam);
+	}
+	
+	
+	
+	@Transactional(readOnly = true)
+	public List<Map<String, Object>> findUseCountEachContentsByMemberBirth(StatisticsParam searchParam) {
+		
+		return statisticsMapper.findUseCountEachContentsByMemberBirth(searchParam);
 	}
 	
 }

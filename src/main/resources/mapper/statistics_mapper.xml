@@ -37,7 +37,7 @@
 	</select>
 	
 	
-	<select id="getReservationAverageOfEachContents" resultType="java.util.HashMap">
+	<select id="findReservationAverageOfEachContents" resultType="java.util.HashMap">
 		SELECT
 			R.CONTENTS_ID, ROUND(AVG(CONVERT(FLOAT, R.USE_MINUTE)), 1) AVERAGE, C.NAME
 		FROM
@@ -61,7 +61,7 @@
 	</select>
 	
 	
-	<select id="getTotalUseTimeEachContents">
+	<select id="findTotalUseTimeEachContents" resultType="java.util.HashMap">
 		SELECT
 			R.CONTENTS_ID, SUM(R.USE_MINUTE) TOTAL, C.NAME
 		FROM
@@ -82,5 +82,39 @@
 			R.CONTENTS_ID, C.NAME
 		ORDER BY
 			TOTAL DESC
+	</select>
+	
+	
+	<select id="findUseCountEachContentsByMemberBirth" resultType="java.util.HashMap">
+		SELECT
+			Y.YEAR, Y.CONTENTS_ID, Y.COUNT, C.NAME
+		FROM
+			(
+				SELECT
+					LEFT(CONVERT(NVARCHAR(10), M.BIRTH), 4) YEAR, R.CONTENTS_ID, COUNT(CONTENTS_ID) COUNT
+				FROM
+					RESERVATION R
+				LEFT OUTER JOIN
+					RESERVATION_MEMBER RM
+				ON
+					R.RESERVATION_ID = RM.RESERVATION_ID
+				LEFT OUTER JOIN
+					MEMBER M
+				ON
+					RM.MEMBER_ID = M.MEMBER_ID
+				WHERE
+					<include refid="whereBetweenDate"/>
+					R.DATA_STATE = 'A'
+					AND
+					R.STATE = 0
+				GROUP BY
+					LEFT(CONVERT(NVARCHAR(10), M.BIRTH), 4), R.CONTENTS_ID
+			) Y
+			LEFT OUTER JOIN
+				CONTENTS C
+			ON
+				Y.CONTENTS_ID  = C.CONTENTS_ID
+			ORDER BY
+				YEAR DESC, COUNT DESC
 	</select>
 </mapper>

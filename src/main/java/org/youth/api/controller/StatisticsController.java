@@ -25,7 +25,7 @@ public class StatisticsController {
 	@GetMapping("/most-used-member")
 	public ResponseEntity<ResponseDTO> getMostUsedMember(StatisticsParam searchParam){
 		
-		List<Map<String, Object>> memberList =  reservationService.getMostUsedMember(searchParam);
+		List<Map<String, Object>> memberList =  reservationService.findMostUsedMember(searchParam);
 		
 		return ResponseEntity.ok(ResponseDTO.builder()
 							 				.code(ResponseCode.SUCC)
