@@ -95,6 +95,7 @@ public class RestExceptionAdvice {
 	public ResponseEntity<ResponseDTO> handleException(BindException exception) {
 		return new ResponseEntity<>(ResponseDTO.builder()
 											   .code(ResponseCode.FAIL)
+											   .message("올바른 요청이 아닙니다.(param)")
 											   .data(getResultMessage(exception.getBindingResult().getFieldErrors().iterator()))
 											   .build(), HttpStatus.OK);
     }
