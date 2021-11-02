@@ -562,7 +562,7 @@ class ReservationServiceTest {
 		assertThat(reservation.getStartTime()).isEqualTo(updateReservation.getStartTime());
 		assertThat(reservation.getEndTime()).isEqualTo(updateReservation.getEndTime());
 		assertThat(reservation.getMembers()).isNotEmpty();
-		assertThat(reservation.getMembers().get(0)).isEqualTo(member2);
+		assertThat(reservation.getMembers().contains(member2));
 		assertThat(reservation.getContents()).isNotNull();
 		assertThat(reservation.getContents()).isEqualTo(first.getContents());
 		

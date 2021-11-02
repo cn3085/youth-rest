@@ -1,8 +1,8 @@
 package org.youth.api.entity;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -69,7 +69,7 @@ public class MemberEntity extends BaseDataEntity {
 	
 	@Builder.Default
 	@ManyToMany(mappedBy = "members")
-	private List<ReservationEntity> reservations = new ArrayList<>();
+	private Set<ReservationEntity> reservations = new LinkedHashSet<>();
 
 	
 	

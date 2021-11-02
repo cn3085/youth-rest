@@ -2,6 +2,7 @@ package org.youth.api.repository;
 
 import static org.youth.api.entity.QMemberEntity.memberEntity;
 import static org.youth.api.entity.QReservationEntity.reservationEntity;
+import static org.youth.api.entity.QContentsEntity.contentsEntity;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,7 +30,10 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
 	public Page<ReservationEntity> searchAll(Pageable pageable, ReservationParam searchParam) {
 		
 		QueryResults<ReservationEntity> result = queryFactory.selectFrom(reservationEntity)
-															 .join(reservationEntity.members, memberEntity)
+																 .innerJoin(reservationEntity.members, memberEntity)
+																 .fetchJoin()
+																 .innerJoin(reservationEntity.contents, contentsEntity)
+																 .fetchJoin()
 															 .where(
 																	likeContentsName(searchParam.getCName()),
 																	likeMemberName(searchParam.getMName()),
@@ -52,16 +56,20 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
 	public List<ReservationEntity> searchAll(ReservationParam searchParam) {
 		
 		return queryFactory.selectFrom(reservationEntity)
-								 .join(reservationEntity.members, memberEntity)
-								 .where(
-										likeContentsName(searchParam.getCName()),
-										likeMemberName(searchParam.getMName()),
-										eqReservationStatus(searchParam.getSt()),
-										eqMemberId(searchParam.getMId()),
-										afterStartTime(searchParam.getSdt()),
-										beforeEndTime(searchParam.getEdt())
+								 .innerJoin(reservationEntity.members, memberEntity)
+								 .fetchJoin()
+								 .innerJoin(reservationEntity.contents, contentsEntity)
+								 .fetchJoin()
+							 .where(
+									likeContentsName(searchParam.getCName()),
+									likeMemberName(searchParam.getMName()),
+									eqReservationStatus(searchParam.getSt()),
+									eqMemberId(searchParam.getMId()),
+									afterStartTime(searchParam.getSdt()),
+									beforeEndTime(searchParam.getEdt())
 										 )
 								.orderBy(reservationEntity.regDate.desc())
+							.distinct()
 							.fetch();
 	}
 

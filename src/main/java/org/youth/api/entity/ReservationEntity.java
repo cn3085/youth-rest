@@ -1,11 +1,9 @@
 package org.youth.api.entity;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -57,7 +55,7 @@ public class ReservationEntity extends BaseDataEntity {
 	@JoinTable(name="RESERVATION_MEMBER",
 				joinColumns = @JoinColumn(name="RESERVATION_ID"),
 				inverseJoinColumns = @JoinColumn(name="MEMBER_ID"))
-	private List<MemberEntity> members = new ArrayList<>();
+	private Set<MemberEntity> members = new LinkedHashSet<>();
 	
 	
 	public void addMember(MemberEntity member) {

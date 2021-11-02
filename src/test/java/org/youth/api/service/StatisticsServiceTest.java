@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @SpringBootTest
 @Import(QuerydslConfig.class)
 @Slf4j
-//@Transactional
+@Transactional
 class StatisticsServiceTest {
 	
 	@Autowired
