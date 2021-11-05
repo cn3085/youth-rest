@@ -58,4 +58,17 @@ public class StatisticsController {
 											.data(contentsList)
 											.build());
 	}
+	
+	
+	
+	@GetMapping("/usetime-by-birth")
+	public ResponseEntity<ResponseDTO> getUseCountEachContentsByMemberBirth(StatisticsParam searchParam){
+		
+		List<Map<String, Object>> contentsList =  reservationService.findUseCountEachContentsByMemberBirth(searchParam);
+		
+		return ResponseEntity.ok(ResponseDTO.builder()
+											.code(ResponseCode.SUCC)
+											.data(contentsList)
+											.build());
+	}
 }

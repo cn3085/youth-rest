@@ -10,6 +10,9 @@
 		<if test='s.ed != null'>
 			<![CDATA[AND R.START_TIME <= #{s.ed}]]>
 		</if>
+		<!-- <if test='s.cId != null'>
+			<![CDATA[AND R.CONTENTS_ID <= #{s.cId}]]>
+		</if> -->
 	</sql>
 
 	<select id="findMostUsedMember" resultMap="mostUsedMemberMap">
@@ -31,8 +34,8 @@
 				RM.MEMBER_ID = M.MEMBER_ID
 			WHERE
 				<include refid="whereBetweenDate"/>
-				<if test='s.cid != null and s.cid != 0'>
-					AND R.CONTENTS_ID = #{s.cid}
+				<if test='s.cId != null and s.cId != 0'>
+					AND R.CONTENTS_ID = #{s.cId}
 				</if>
 			GROUP BY
 				M.MEMBER_ID, M.NAME
@@ -53,8 +56,8 @@
 			R.CONTENTS_ID = C.CONTENTS_ID
 		WHERE
 			<include refid="whereBetweenDate"/>
-			<if test='s.cid != null and s.cid != 0'>
-				AND R.CONTENTS_ID = #{s.cid}
+			<if test='s.cId != null and s.cId != 0'>
+				AND R.CONTENTS_ID = #{s.cId}
 			</if>
 		GROUP BY
 			ACC.MEMBER_ID, ACC.MEMBER_NAME, R.CONTENTS_ID, C.NAME, C.COLOR, ACC.ALL_COUNT
@@ -74,8 +77,8 @@
 			RM.MEMBER_ID = M.MEMBER_ID
 		WHERE
 			<include refid="whereBetweenDate"/>
-			<if test='s.cid != null and s.cid != 0'>
-				AND CONTENTS_ID = #{s.cid}
+			<if test='s.cId != null and s.cId != 0'>
+				AND CONTENTS_ID = #{s.cId}
 			</if>
 		GROUP BY
 			M.MEMBER_ID, M.NAME
@@ -151,6 +154,7 @@
 					RM.MEMBER_ID = M.MEMBER_ID
 				WHERE
 					<include refid="whereBetweenDate"/>
+					AND 
 					R.DATA_STATE = 'A'
 					AND
 					R.STATE = 0
