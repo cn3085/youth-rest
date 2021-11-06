@@ -52,6 +52,7 @@ public class ReservationService {
 	}
 	
 	
+	
 	private List<ReservationEntity> getReservations(ReservationParam param){
 		return reservationRepository.searchAll(param);
 	}

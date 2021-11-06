@@ -32,4 +32,43 @@ public class StatisticsController {
 							 				.data(memberList)
 							 				.build());
 	}
+	
+	
+	
+	@GetMapping("/using-average-contents")
+	public ResponseEntity<ResponseDTO> getAverageOfEachContents(StatisticsParam searchParam){
+		
+		List<Map<String, Object>> contentsList =  reservationService.findReservationAverageOfEachContents(searchParam);
+		
+		return ResponseEntity.ok(ResponseDTO.builder()
+				.code(ResponseCode.SUCC)
+				.data(contentsList)
+				.build());
+	}
+	
+	
+	
+	@GetMapping("/total-usetime-contents")
+	public ResponseEntity<ResponseDTO> getTotalUseTimeEachContents(StatisticsParam searchParam){
+		
+		List<Map<String, Object>> contentsList =  reservationService.findTotalUseTimeEachContents(searchParam);
+		
+		return ResponseEntity.ok(ResponseDTO.builder()
+											.code(ResponseCode.SUCC)
+											.data(contentsList)
+											.build());
+	}
+	
+	
+	
+	@GetMapping("/usetime-by-birth")
+	public ResponseEntity<ResponseDTO> getUseCountEachContentsByMemberBirth(StatisticsParam searchParam){
+		
+		List<Map<String, Object>> contentsList =  reservationService.findUseCountEachContentsByMemberBirth(searchParam);
+		
+		return ResponseEntity.ok(ResponseDTO.builder()
+											.code(ResponseCode.SUCC)
+											.data(contentsList)
+											.build());
+	}
 }

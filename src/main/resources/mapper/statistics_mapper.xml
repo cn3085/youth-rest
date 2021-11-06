@@ -10,10 +10,60 @@
 		<if test='s.ed != null'>
 			<![CDATA[AND R.START_TIME <= #{s.ed}]]>
 		</if>
+		<!-- <if test='s.cId != null'>
+			<![CDATA[AND R.CONTENTS_ID <= #{s.cId}]]>
+		</if> -->
 	</sql>
 
-	<select id="findMostUsedMember" resultType="java.util.HashMap">
+	<select id="findMostUsedMember" resultMap="mostUsedMemberMap">
 		SELECT
+			ACC.MEMBER_ID, MEMBER_NAME, ALL_COUNT, R.CONTENTS_ID, C.NAME AS CONTENTS_NAME, C.COLOR, COUNT(R.CONTENTS_ID) EACH_COUNT
+		FROM
+			(
+			SELECT
+				TOP 5 COUNT(M.MEMBER_ID) ALL_COUNT, M.MEMBER_ID, M.NAME AS MEMBER_NAME
+			FROM
+				RESERVATION R
+			LEFT OUTER JOIN
+				RESERVATION_MEMBER RM
+			ON
+				R.RESERVATION_ID = RM.RESERVATION_ID
+			LEFT OUTER JOIN
+				MEMBER M
+			ON
+				RM.MEMBER_ID = M.MEMBER_ID
+			WHERE
+				<include refid="whereBetweenDate"/>
+				<if test='s.cId != null and s.cId != 0'>
+					AND R.CONTENTS_ID = #{s.cId}
+				</if>
+			GROUP BY
+				M.MEMBER_ID, M.NAME
+			ORDER BY
+				ALL_COUNT DESC
+			) ACC
+		LEFT OUTER JOIN
+			RESERVATION_MEMBER RM
+		ON
+			RM.MEMBER_ID =ACC.MEMBER_ID
+		LEFT OUTER JOIN
+			RESERVATION R
+		ON
+			R.RESERVATION_ID = RM.RESERVATION_ID
+		LEFT OUTER JOIN
+			CONTENTS C
+		ON
+			R.CONTENTS_ID = C.CONTENTS_ID
+		WHERE
+			<include refid="whereBetweenDate"/>
+			<if test='s.cId != null and s.cId != 0'>
+				AND R.CONTENTS_ID = #{s.cId}
+			</if>
+		GROUP BY
+			ACC.MEMBER_ID, ACC.MEMBER_NAME, R.CONTENTS_ID, C.NAME, C.COLOR, ACC.ALL_COUNT
+		ORDER BY
+			ACC.ALL_COUNT DESC, EACH_COUNT DESC, MEMBER_NAME
+		<!-- SELECT
 			TOP 5 COUNT(*) COUNT, M.MEMBER_ID, M.NAME
 		FROM
 			RESERVATION R
@@ -27,19 +77,19 @@
 			RM.MEMBER_ID = M.MEMBER_ID
 		WHERE
 			<include refid="whereBetweenDate"/>
-			<if test='s.cid != null and s.cid != 0'>
-				AND CONTENTS_ID = #{s.cid}
+			<if test='s.cId != null and s.cId != 0'>
+				AND CONTENTS_ID = #{s.cId}
 			</if>
 		GROUP BY
 			M.MEMBER_ID, M.NAME
 		ORDER BY
-			COUNT DESC
+			COUNT DESC -->
 	</select>
 	
 	
 	<select id="findReservationAverageOfEachContents" resultType="java.util.HashMap">
 		SELECT
-			R.CONTENTS_ID, ROUND(AVG(CONVERT(FLOAT, R.USE_MINUTE)), 1) AVERAGE, C.NAME
+			R.CONTENTS_ID, ROUND(AVG(CONVERT(FLOAT, R.USE_MINUTE)), 1) AVERAGE, C.NAME, C.COLOR
 		FROM
 			RESERVATION R
 		LEFT OUTER JOIN
@@ -55,7 +105,7 @@
 			AND
 				C.DATA_STATE = 'A'
 		GROUP BY
-			R.CONTENTS_ID, C.NAME
+			R.CONTENTS_ID, C.NAME, C.COLOR
 		ORDER BY
 			AVERAGE DESC
 	</select>
@@ -63,7 +113,7 @@
 	
 	<select id="findTotalUseTimeEachContents" resultType="java.util.HashMap">
 		SELECT
-			R.CONTENTS_ID, SUM(R.USE_MINUTE) TOTAL, C.NAME
+			R.CONTENTS_ID, SUM(R.USE_MINUTE) TOTAL, C.NAME, C.COLOR
 		FROM
 			RESERVATION R
 		LEFT OUTER JOIN
@@ -79,7 +129,7 @@
 			AND
 			C.DATA_STATE = 'A'
 		GROUP BY
-			R.CONTENTS_ID, C.NAME
+			R.CONTENTS_ID, C.NAME, C.COLOR
 		ORDER BY
 			TOTAL DESC
 	</select>
@@ -104,6 +154,7 @@
 					RM.MEMBER_ID = M.MEMBER_ID
 				WHERE
 					<include refid="whereBetweenDate"/>
+					AND 
 					R.DATA_STATE = 'A'
 					AND
 					R.STATE = 0
@@ -117,4 +168,20 @@
 			ORDER BY
 				YEAR DESC, COUNT DESC
 	</select>
+	
+	
+	<resultMap type="org.youth.api.dto.statistics.MostUsedMemberDTO" id="mostUsedMemberMap">
+		<result property="memberId" column="MEMBER_ID"/>
+		<result property="memberName" column="MEMBER_NAME"/>
+		<result property="allCount" column="ALL_COUNT"/>
+		<collection property="contents" resultMap="mostUsedMemberContentsMap"></collection>
+	</resultMap>
+	
+	
+	<resultMap type="org.youth.api.dto.statistics.MostUsedMemberContentsDTO" id="mostUsedMemberContentsMap">
+		<result property="contentsId" column="CONTENTS_ID"/>
+		<result property="contentsName" column="CONTENTS_NAME"/>
+		<result property="color" column="COLOR"/>
+		<result property="eachCount" column="EACH_COUNT"/>
+	</resultMap>
 </mapper>
