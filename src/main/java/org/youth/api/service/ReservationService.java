@@ -78,12 +78,12 @@ public class ReservationService {
 
 	
 	@Transactional(rollbackFor = Exception.class)
-	public void updateReservation(@Valid ReservationDTO.Details reservationDTO) {
+	public ReservationEntity updateReservation(@Valid ReservationDTO.Details reservationDTO) {
 		
 		checkPossibleChangeReservationTime(reservationDTO);
 		
 		ReservationEntity reservation = reservationDTO.toEntity();
-		reservationRepository.save(reservation);
+		return reservationRepository.save(reservation);
 	}
 	
 	

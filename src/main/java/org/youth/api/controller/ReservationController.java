@@ -21,6 +21,7 @@ import org.youth.api.code.ResponseCode;
 import org.youth.api.dto.ReservationDTO;
 import org.youth.api.dto.ReservationParam;
 import org.youth.api.dto.ResponseDTO;
+import org.youth.api.entity.ReservationEntity;
 import org.youth.api.service.ReservationService;
 
 import lombok.RequiredArgsConstructor;
@@ -64,10 +65,11 @@ public class ReservationController {
 	@PostMapping
 	public ResponseEntity<ResponseDTO> registReservation(@RequestBody @Valid ReservationDTO.Regist reservationDTO){
 		
-		reservationService.registReservation(reservationDTO);
+		ReservationDTO.Details reservation =  ReservationDTO.Details.of(reservationService.registReservation(reservationDTO));
 		
 		return ResponseEntity.ok(ResponseDTO.builder()
 											.code(ResponseCode.SUCC)
+											.data(reservation)
 											.message("예약이 등록되었습니다.")
 											.build());
 	}
@@ -102,9 +104,11 @@ public class ReservationController {
 	@PutMapping
 	public ResponseEntity<ResponseDTO> updateReservation(@RequestBody @Valid ReservationDTO.Details reservationDTO){
 		
-		reservationService.updateReservation(reservationDTO);
+		ReservationDTO.Details reservation = ReservationDTO.Details.of(reservationService.updateReservation(reservationDTO));
 		
 		return ResponseEntity.ok(ResponseDTO.builder()
+											.data(reservation)
+											.message("수정이 완료되었습니다.")
 											.code(ResponseCode.SUCC)
 											.build());
 	}
