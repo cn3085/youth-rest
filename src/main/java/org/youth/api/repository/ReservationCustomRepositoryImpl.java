@@ -64,6 +64,7 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
 									likeMemberName(searchParam.getMName()),
 									eqReservationStatus(searchParam.getSt()),
 									eqMemberId(searchParam.getMId()),
+									eqContentsId(searchParam.getCId()),
 									afterStartTime(searchParam.getSdt()),
 									beforeEndTime(searchParam.getEdt())
 										 )
@@ -142,6 +143,15 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
 			return null;
 		}
 		return memberEntity.memberId.eq(mId);
+	}
+	
+	
+	private BooleanExpression eqContentsId(Long cId) {
+		
+		if(cId == null) {
+			return null;
+		}
+		return contentsEntity.contentsId.eq(cId);
 	}
 	
 	
