@@ -5,6 +5,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,6 +14,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Where;
 import org.youth.api.code.ReservationState;
 
@@ -51,7 +53,8 @@ public class ReservationEntity extends BaseDataEntity {
 	private ContentsEntity contents;
 	
 	@Builder.Default
-	@ManyToMany
+	@BatchSize(size=100)
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name="RESERVATION_MEMBER",
 				joinColumns = @JoinColumn(name="RESERVATION_ID"),
 				inverseJoinColumns = @JoinColumn(name="MEMBER_ID"))
