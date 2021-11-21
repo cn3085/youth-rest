@@ -1,8 +1,8 @@
 package org.youth.api.repository;
 
+import static org.youth.api.entity.QContentsEntity.contentsEntity;
 import static org.youth.api.entity.QMemberEntity.memberEntity;
 import static org.youth.api.entity.QReservationEntity.reservationEntity;
-import static org.youth.api.entity.QContentsEntity.contentsEntity;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,10 +30,9 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
 	public Page<ReservationEntity> searchAll(Pageable pageable, ReservationParam searchParam) {
 		
 		QueryResults<ReservationEntity> result = queryFactory.selectFrom(reservationEntity)
-																 .innerJoin(reservationEntity.members, memberEntity)
-																 .fetchJoin()
-																 .innerJoin(reservationEntity.contents, contentsEntity)
-																 .fetchJoin()
+															 .innerJoin(reservationEntity.members, memberEntity)
+															 .innerJoin(reservationEntity.contents, contentsEntity)
+															 .fetchJoin()
 															 .where(
 																	likeContentsName(searchParam.getCName()),
 																	eqContentsId(searchParam.getCId()),
@@ -126,7 +125,7 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
 		if(StringUtils.isBlank(mName)) {
 			return null;
 		}
-		return memberEntity.name.like("%" + mName + "%");
+		return reservationEntity.members.any().memberEntity.name.contains(mName);
 	}
 	
 	
