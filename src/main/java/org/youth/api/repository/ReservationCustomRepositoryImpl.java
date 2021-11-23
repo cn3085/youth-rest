@@ -36,6 +36,7 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
 															 .fetchJoin()
 															 .where(
 																	likeContentsName(searchParam.getCName()),
+																	eqContentsId(searchParam.getCId()),
 																	likeMemberName(searchParam.getMName()),
 																	eqReservationStatus(searchParam.getSt()),
 																	eqMemberId(searchParam.getMId()),
