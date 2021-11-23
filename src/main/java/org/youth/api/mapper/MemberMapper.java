@@ -19,4 +19,7 @@ public interface MemberMapper {
 	MemberDTO.MemberDetails ofMemberDetails(MemberEntity memberDetails);
 	
 	MemberDTO.DoubleBookingRes ofDoubleBooking(MemberEntity memberDetails);
+
+	@Mapping(target = "reservations", ignore = true)
+	MemberEntity toEntity(MemberDTO.MemberDetails memberDetails);
 }

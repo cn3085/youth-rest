@@ -82,7 +82,10 @@ public class ReservationService {
 		
 		checkPossibleChangeReservationTime(reservationDTO);
 		
-		ReservationEntity reservation = reservationDTO.toEntity();
+		ReservationEntity reservation = getReservationDetails(reservationDTO.getReservationId());
+		
+		reservation.updateDetails(reservationDTO);
+//		ReservationEntity reservation = reservationDTO.toEntity();
 		return reservationRepository.save(reservation);
 	}
 	

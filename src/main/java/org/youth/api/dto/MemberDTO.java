@@ -129,6 +129,10 @@ public class MemberDTO {
 		public static MemberDetails of(MemberEntity memberDetails) {
 			return MemberMapper.INSTANCE.ofMemberDetails(memberDetails);
 		}
+		
+		public MemberEntity toEntity() {
+			return MemberMapper.INSTANCE.toEntity(this);
+		}
 	}
 	
 	

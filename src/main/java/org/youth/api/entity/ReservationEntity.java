@@ -3,6 +3,7 @@ package org.youth.api.entity;
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,10 +14,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.validation.Valid;
 
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Where;
 import org.youth.api.code.ReservationState;
+import org.youth.api.dto.MemberDTO;
+import org.youth.api.dto.ReservationDTO;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -73,6 +77,17 @@ public class ReservationEntity extends BaseDataEntity {
 	@Override
 	public String toString() {
 		return "";
+	}
+
+	
+	public void updateDetails(@Valid ReservationDTO.Details reservationDTO) {
+		
+		this.startTime = reservationDTO.getStartTime();
+		this.endTime = reservationDTO.getEndTime();
+		this.useMinute = reservationDTO.getUseMinute();
+		this.state = reservationDTO.getState();
+		this.contents = reservationDTO.getContents().toEntity();
+		this.members = reservationDTO.getMembers().stream().map(MemberDTO.MemberDetails::toEntity).collect(Collectors.toSet());
 	}
 
 
