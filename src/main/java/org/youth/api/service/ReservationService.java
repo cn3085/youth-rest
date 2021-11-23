@@ -103,13 +103,13 @@ public class ReservationService {
 	
 	
 	private void checkPossibleToReservation(ReservationDTO.Regist reservationDTO) {
-		
+		final Long NOT_YET_RESERVATION_ID = -1L;
 		checkEnableReservationContents(reservationDTO.getContents());
 		
 		List<ReservationEntity> overwrapReservations = getReservationByTime(reservationDTO.getStartTime(), reservationDTO.getEndTime());
 		
 		checkDoubleBooking(overwrapReservations, reservationDTO.getContents().getContentsId());
-		checkMemberOvertimeUseThisContents(reservationDTO.getStartTime(), reservationDTO.getEndTime(), reservationDTO.getContents(), reservationDTO.getMembers());
+		checkMemberOvertimeUseThisContents(NOT_YET_RESERVATION_ID, reservationDTO.getStartTime(), reservationDTO.getEndTime(), reservationDTO.getContents(), reservationDTO.getMembers());
 		checkMemberUsingAnotherContetns(overwrapReservations, reservationDTO.getMembers());
 		
 	}
@@ -123,7 +123,7 @@ public class ReservationService {
 		List<ReservationEntity> overwrapReservations = getReservationByTimeExcludeThis(reservationDTO.getStartTime(), reservationDTO.getEndTime(), reservationDTO.getReservationId());
 		
 		checkDoubleBooking(overwrapReservations, reservationDTO.getContents().getContentsId());
-		checkMemberOvertimeUseThisContents(reservationDTO.getStartTime(), reservationDTO.getEndTime(), reservationDTO.getContents(), reservationDTO.getMembers());
+		checkMemberOvertimeUseThisContents(reservationDTO.getReservationId(), reservationDTO.getStartTime(), reservationDTO.getEndTime(), reservationDTO.getContents(), reservationDTO.getMembers());
 		checkMemberUsingAnotherContetns(overwrapReservations, reservationDTO.getMembers());
 		
 	}
@@ -193,7 +193,7 @@ public class ReservationService {
 	
 	
 	
-	private void checkMemberOvertimeUseThisContents(LocalDateTime startTime, LocalDateTime endTime, ContentsDTO.Details contents, List<MemberDTO.MemberDetails> members) {
+	private void checkMemberOvertimeUseThisContents(Long reservationId, LocalDateTime startTime, LocalDateTime endTime, ContentsDTO.Details contents, List<MemberDTO.MemberDetails> members) {
 
 		final long reservationMaxMinute = settingService.getSettingValues().getReservationMaxMinute();
 		final long reservationMinute = Duration.between(startTime.toLocalTime(), endTime.toLocalTime()).toMinutes();
@@ -212,9 +212,13 @@ public class ReservationService {
 			List<ReservationEntity> todayReservationForMember = getReservations(param);
 			
 			long useMinute = todayReservationForMember.stream().map( r -> {
+							if(r.getReservationId() == reservationId) { //현재 등록된 예약시간은 제외하구 계산함
+								return 0L;
+							}else {
 								Duration diff = Duration.between(r.getStartTime().toLocalTime(), r.getEndTime().toLocalTime());
 								return diff.toMinutes();
-							}).reduce(0L, (x, y) -> x + y);
+							}
+			}).reduce(0L, (x, y) -> x + y);
 			
 			long sumMinute = useMinute + reservationMinute;
 			

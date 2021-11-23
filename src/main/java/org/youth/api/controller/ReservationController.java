@@ -101,6 +101,7 @@ public class ReservationController {
 		
 		return ResponseEntity.ok(ResponseDTO.builder()
 											.code(ResponseCode.SUCC)
+											.message("예약을 삭제했습니다.")
 											.build());
 	}
 	
