@@ -6,6 +6,7 @@ import static org.youth.api.entity.QReservationEntity.reservationEntity;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
@@ -29,7 +30,7 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
 	@Override
 	public Page<ReservationEntity> searchAll(Pageable pageable, ReservationParam searchParam) {
 		
-		QueryResults<ReservationEntity> result = queryFactory.selectFrom(reservationEntity)
+		List<ReservationEntity> result = queryFactory.selectFrom(reservationEntity)
 															 .innerJoin(reservationEntity.members, memberEntity)
 															 .innerJoin(reservationEntity.contents, contentsEntity)
 															 .fetchJoin()
@@ -45,9 +46,25 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
 															.offset(pageable.getOffset())
 															.limit(pageable.getPageSize())
 															.orderBy(reservationEntity.regDate.desc())
-														.fetchResults();
+															.distinct()
+														.fetch();
 		
-		return new PageImpl<>(result.getResults(), pageable, result.getTotal());
+		Long totalCount = queryFactory.selectFrom(reservationEntity)
+							 .innerJoin(reservationEntity.members, memberEntity)
+							 .innerJoin(reservationEntity.contents, contentsEntity)
+							 .fetchJoin()
+							 .where(
+									likeContentsName(searchParam.getCName()),
+									likeMemberName(searchParam.getMName()),
+									eqReservationStatus(searchParam.getSt()),
+									eqMemberId(searchParam.getMId()),
+									afterStartTime(searchParam.getSdt()),
+									beforeEndTime(searchParam.getEdt())
+									 )
+							 .distinct()
+							.fetchCount();
+		
+		return new PageImpl<>(result, pageable, totalCount);
 	}
 	
 	

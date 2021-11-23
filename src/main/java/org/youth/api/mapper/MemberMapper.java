@@ -4,6 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 import org.youth.api.dto.MemberDTO;
+import org.youth.api.dto.MemberDTO.OverTimeUseRes;
 import org.youth.api.entity.MemberEntity;
 
 @Mapper
@@ -22,4 +23,8 @@ public interface MemberMapper {
 
 	@Mapping(target = "reservations", ignore = true)
 	MemberEntity toEntity(MemberDTO.MemberDetails memberDetails);
+	
+	@Mapping(target = "reservationMinute", ignore = true)
+	@Mapping(target = "usedMinute", ignore = true)
+	OverTimeUseRes ofOverTimeUseRes(MemberEntity memberDetails);
 }

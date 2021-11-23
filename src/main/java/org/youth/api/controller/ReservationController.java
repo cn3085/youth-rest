@@ -7,8 +7,10 @@ import javax.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +23,10 @@ import org.youth.api.code.ResponseCode;
 import org.youth.api.dto.ReservationDTO;
 import org.youth.api.dto.ReservationParam;
 import org.youth.api.dto.ResponseDTO;
-import org.youth.api.entity.ReservationEntity;
+import org.youth.api.exception.reservation.ContainsAnotherReservationException;
+import org.youth.api.exception.reservation.DoubleBookingException;
+import org.youth.api.exception.reservation.OverTimeUseMemberException;
+import org.youth.api.exception.reservation.ReservationRestrictContentsException;
 import org.youth.api.service.ReservationService;
 
 import lombok.RequiredArgsConstructor;
@@ -124,5 +129,45 @@ public class ReservationController {
 											.message("예약이 취소되었습니다.")
 											.build());
 	}
+	
+	
+	
+	@ExceptionHandler(value = ReservationRestrictContentsException.class)
+	public ResponseEntity<ResponseDTO> handleException(ReservationRestrictContentsException e){
+		return new ResponseEntity<>(ResponseDTO.builder()
+											   .code(ResponseCode.R_RESTRICT_CONTENTS)
+											   .message(e.getMessage())
+										   	   .build(), HttpStatus.OK);
+	}
+	
+	
+	@ExceptionHandler(value = DoubleBookingException.class)
+	public ResponseEntity<ResponseDTO> handleException(DoubleBookingException e){
+		return new ResponseEntity<>(ResponseDTO.builder()
+												.code(ResponseCode.R_DOUBLE_BOOKING)
+												.message(e.getMessage())
+												.build(), HttpStatus.OK);
+	}
+	
+	
+	@ExceptionHandler(value = ContainsAnotherReservationException.class)
+	public ResponseEntity<ResponseDTO> handleException(ContainsAnotherReservationException e){
+		return new ResponseEntity<>(ResponseDTO.builder()
+												.code(ResponseCode.R_CONTAINS_ANOTHER_RESERVATION)
+												.data(e.getBannedMemberList())
+												.message(e.getMessage())
+												.build(), HttpStatus.OK);
+	}
+	
+	
+	@ExceptionHandler(value = OverTimeUseMemberException.class)
+	public ResponseEntity<ResponseDTO> handleException(OverTimeUseMemberException e){
+		return new ResponseEntity<>(ResponseDTO.builder()
+												.code(ResponseCode.R_OVERTIME_USE_MEMBER)
+												.data(e.getOverTimeMembers())
+												.message(e.getMessage())
+												.build(), HttpStatus.OK);
+	}
+	
 	
 }

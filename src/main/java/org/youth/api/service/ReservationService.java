@@ -20,6 +20,7 @@ import org.youth.api.dto.MemberDTO;
 import org.youth.api.dto.ReservationDTO;
 import org.youth.api.dto.ReservationParam;
 import org.youth.api.entity.ContentsEntity;
+import org.youth.api.entity.MemberEntity;
 import org.youth.api.entity.ReservationEntity;
 import org.youth.api.exception.reservation.ContainsAnotherReservationException;
 import org.youth.api.exception.reservation.DoubleBookingException;
@@ -35,6 +36,7 @@ public class ReservationService {
 	
 	private final ReservationRepository reservationRepository;
 	private final ContentsService contentsService;
+	private final MemberService memberService;
 	private final SettingService settingService;
 
 	
@@ -174,6 +176,7 @@ public class ReservationService {
 						
 						MemberDTO.DoubleBookingRes bannedMember = new MemberDTO.DoubleBookingRes();
 						bannedMember.setMemberId(m.getMemberId());
+						bannedMember.setName(m.getName());
 						bannedMember.getReservations().add(ReservationDTO.DoubleBookingRes.of(reservation));
 						
 						return bannedMember;
@@ -216,12 +219,11 @@ public class ReservationService {
 			long sumMinute = useMinute + reservationMinute;
 			
 			if(reservationMaxMinute < sumMinute ) {
-				MemberDTO.OverTimeUseRes overTimeDTO = new MemberDTO.OverTimeUseRes();
 				
-				overTimeDTO.setMemberId(member.getMemberId());
-				overTimeDTO.setName(member.getName());
-				overTimeDTO.setSex(member.getSex());
-				overTimeDTO.setBirth(member.getBirth());
+				MemberEntity overTimeMmeber = memberService.getMemberDetails(member.getMemberId());
+				
+				MemberDTO.OverTimeUseRes overTimeDTO = MemberDTO.OverTimeUseRes.of(overTimeMmeber);
+				
 				overTimeDTO.setUsedMinute(useMinute);
 				overTimeDTO.setReservationMinute(reservationMinute);
 				
