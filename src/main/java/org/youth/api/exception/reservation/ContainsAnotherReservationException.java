@@ -13,7 +13,7 @@ public class ContainsAnotherReservationException extends RuntimeException{
 
 	private static final long serialVersionUID = 1827624657841129501L;
 	
-	private final List<MemberDTO.DoubleBookingRes> bannedMemberList;
+	private final transient List<MemberDTO.DoubleBookingRes> bannedMemberList;
 	
 
 	@Override

@@ -139,6 +139,7 @@ public class MemberDTO {
 	public static class DoubleBookingRes {
 		
 		private Long memberId;
+		private String name;
 		
 		private List<ReservationDTO.DoubleBookingRes> reservations = new ArrayList<>();
 
@@ -162,8 +163,8 @@ public class MemberDTO {
 		private long usedMinute;
 		private long reservationMinute;
 		
-		public static MemberDTO.DoubleBookingRes of(MemberEntity memberDetails) {
-			return MemberMapper.INSTANCE.ofDoubleBooking(memberDetails);
+		public static MemberDTO.OverTimeUseRes of(MemberEntity memberDetails) {
+			return MemberMapper.INSTANCE.ofOverTimeUseRes(memberDetails);
 		}
 	}
 	
