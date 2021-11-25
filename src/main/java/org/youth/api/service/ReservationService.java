@@ -97,6 +97,7 @@ public class ReservationService {
 	public void deleteReservation(long reservationId) {
 		
 		ReservationEntity reservation = getReservationDetails(reservationId);
+		reservation.delete();
 		reservationRepository.delete(reservation);
 	}
 	

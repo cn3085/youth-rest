@@ -90,5 +90,10 @@ public class ReservationEntity extends BaseDataEntity {
 		this.members = reservationDTO.getMembers().stream().map(MemberDTO.MemberDetails::toEntity).collect(Collectors.toSet());
 	}
 
+	
+	public void delete() {
+		this.members.clear();
+	}
+
 
 }
