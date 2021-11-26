@@ -207,8 +207,8 @@ public class ReservationService {
 			param.setCName(contents.getName());
 			param.setMId(member.getMemberId());
 			param.setSt(ReservationState.OK);
-			param.setSdt(LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0)));
-			param.setEdt(LocalDateTime.now());
+			param.setSdt(LocalDateTime.of(LocalDate.now(), LocalTime.MIN));
+			param.setEdt(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
 			
 			List<ReservationEntity> todayReservationForMember = getReservations(param);
 			
