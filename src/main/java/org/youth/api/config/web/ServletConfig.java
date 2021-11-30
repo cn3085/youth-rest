@@ -11,11 +11,11 @@ import com.navercorp.lucy.security.xss.servletfilter.XssEscapeServletFilter;
 @Configuration
 public class ServletConfig implements WebMvcConfigurer {
 
-	@Override
-	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-
-		registry.addResourceHandler("/**").addResourceLocations("classpath:/static/");
-	}
+//	@Override
+//	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//
+//		registry.addResourceHandler("/**").addResourceLocations("classpath:/static/");
+//	}
 
 //	@Bean
 //	public FilterRegistrationBean<MultipartFilter> registrationMultipartFilter(){
