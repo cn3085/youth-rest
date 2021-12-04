@@ -18,4 +18,12 @@ public class StatisticsParam {
 	
 	private Long cId; //콘텐츠 아이디
 	
+	public void setEd(LocalDate ed) {
+		if(ed == null) {
+			this.ed = null;
+			return;
+		}
+		this.ed = ed.plusDays(1);
+	}
+	
 }

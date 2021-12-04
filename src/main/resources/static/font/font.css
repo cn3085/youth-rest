@@ -53,7 +53,8 @@
    
    
    
-  body,h1,h2,h3,h4,h5,h6,li,a,textarea,button,strong,label,input,th  {
-       font-family:'Noto Sans KR', 고딕, san-serif, IcoMoon,dashicons, FontAwesome!important;
-          color: #4c4c4e;
-     }
+   
+body,h1,h2,h3,h4,h5,h6,li,a,textarea,button,strong,label,input,th, td, table  {
+     font-family:'Noto Sans KR', 고딕, san-serif, IcoMoon,dashicons, FontAwesome!important;
+     color: #4c4c4e;
+}

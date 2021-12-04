@@ -1,6 +1,8 @@
 package org.youth.api.dto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.youth.api.code.ReservationState;
@@ -26,5 +28,15 @@ public class ReservationParam {
 //	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime edt; //reservationStarttime
+	
+	public void setEdt(LocalDateTime edt) {
+		if(edt == null) {
+			this.edt = null;
+			return;
+		}
+		this.edt = LocalDateTime.of(LocalDate.from(edt), LocalTime.MAX);
+	}
+	
+	
 	
 }

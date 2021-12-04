@@ -166,19 +166,19 @@ button {
   font-weight: bolder;
   cursor: pointer;
 }
-/* .btn:hover {
+button:hover {
     animation-name: button-hover;
     animation-duration: 0.2s;
     animation-fill-mode: forwards;
   }
   @keyframes button-hover {
     from {
-      background: ;
+      background: red;
     }
     to {
         background: solid 1px #ffea71
     }
-  } */
+  }
 
 select option{
   font-size: 16.3px;
