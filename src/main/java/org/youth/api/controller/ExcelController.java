@@ -46,15 +46,15 @@ public class ExcelController {
 		List<ExcelTitleDTO> titleList = new ArrayList<>();
 		
 		titleList.add(new ExcelTitleDTO("memberId", "아이디", 10));
-		titleList.add(new ExcelTitleDTO("name", "이름", 10));
+		titleList.add(new ExcelTitleDTO("name", "이름", 20));
 		titleList.add(new ExcelTitleDTO("sex", "성별", 10));
-		titleList.add(new ExcelTitleDTO("birth", "생일", 10));
-		titleList.add(new ExcelTitleDTO("myPhoneNumber", "연락처1", 10));
-		titleList.add(new ExcelTitleDTO("parentsPhoneNumber", "연락처2", 10));
-		titleList.add(new ExcelTitleDTO("school", "학교", 10));
+		titleList.add(new ExcelTitleDTO("birth", "생일", 30));
+		titleList.add(new ExcelTitleDTO("myPhoneNumber", "연락처1", 30));
+		titleList.add(new ExcelTitleDTO("parentsPhoneNumber", "연락처2", 30));
+		titleList.add(new ExcelTitleDTO("school", "학교", 30));
 		titleList.add(new ExcelTitleDTO("grade", "학년", 10));
-		titleList.add(new ExcelTitleDTO("memo", "메모", 10));
-		titleList.add(new ExcelTitleDTO("regDate", "등록일", 10));
+		titleList.add(new ExcelTitleDTO("memo", "메모", 50));
+		titleList.add(new ExcelTitleDTO("regDate", "등록일", 30));
 		
 		
 		List<Map<String, Object>> bodyList = memberList.stream().map( m -> {
@@ -93,10 +93,10 @@ public class ExcelController {
 		List<ExcelTitleDTO> titleList = new ArrayList<>();
 		
 		titleList.add(new ExcelTitleDTO("contentsId", "아이디", 10));
-		titleList.add(new ExcelTitleDTO("name", "이름", 10));
-		titleList.add(new ExcelTitleDTO("enableReservation", "예약 가능 여부", 10));
-		titleList.add(new ExcelTitleDTO("description", "설명", 10));
-		titleList.add(new ExcelTitleDTO("regDate", "등록일", 10));
+		titleList.add(new ExcelTitleDTO("name", "이름", 30));
+		titleList.add(new ExcelTitleDTO("enableReservation", "예약 가능 여부", 30));
+		titleList.add(new ExcelTitleDTO("description", "설명", 40));
+		titleList.add(new ExcelTitleDTO("regDate", "등록일", 30));
 		
 		
 		List<Map<String, Object>> bodyList = contentsList.stream().map( m -> {
@@ -130,13 +130,13 @@ public class ExcelController {
 		List<ExcelTitleDTO> titleList = new ArrayList<>();
 		
 		titleList.add(new ExcelTitleDTO("reservationId", "아이디", 10));
-		titleList.add(new ExcelTitleDTO("startTime", "예약시간(시작)", 10));
-		titleList.add(new ExcelTitleDTO("endTime", "예약시간(종료)", 10));
-		titleList.add(new ExcelTitleDTO("state", "예약상태", 10));
+		titleList.add(new ExcelTitleDTO("startTime", "예약시간(시작)", 30));
+		titleList.add(new ExcelTitleDTO("endTime", "예약시간(종료)", 30));
+		titleList.add(new ExcelTitleDTO("state", "예약상태", 15));
 		titleList.add(new ExcelTitleDTO("contentsId", "콘텐츠 아이디", 10));
-		titleList.add(new ExcelTitleDTO("contents", "콘텐츠 이름", 10));
-		titleList.add(new ExcelTitleDTO("members", "예약 회원", 10));
-		titleList.add(new ExcelTitleDTO("regDate", "등록일", 10));
+		titleList.add(new ExcelTitleDTO("contents", "콘텐츠 이름", 20));
+		titleList.add(new ExcelTitleDTO("members", "예약 회원", 40));
+		titleList.add(new ExcelTitleDTO("regDate", "등록일", 30));
 		
 		
 		List<Map<String, Object>> bodyList = reservationList.stream().map( r -> {
