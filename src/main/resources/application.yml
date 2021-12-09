@@ -100,5 +100,6 @@ spring:
 server:
   port: 8088
 logging:
+  config: classpath:log4j2_local.xml
   level:
-    p6spy: debug
+    p6spy: info
