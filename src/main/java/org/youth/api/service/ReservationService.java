@@ -204,7 +204,7 @@ public class ReservationService {
 		
 		for(MemberDTO.MemberDetails member : members) {
 			
-			param.setCName(contents.getName());
+			param.setCId(contents.getContentsId());
 			param.setMId(member.getMemberId());
 			param.setSt(ReservationState.OK);
 			param.setSdt(LocalDateTime.of(LocalDate.now(), LocalTime.MIN));

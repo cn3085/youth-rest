@@ -37,6 +37,7 @@
 				<if test='s.cId != null and s.cId != 0'>
 					AND R.CONTENTS_ID = #{s.cId}
 				</if>
+				AND R.STATE = 0
 			GROUP BY
 				M.MEMBER_ID, M.NAME
 			ORDER BY
@@ -59,6 +60,8 @@
 			<if test='s.cId != null and s.cId != 0'>
 				AND R.CONTENTS_ID = #{s.cId}
 			</if>
+			AND
+				R.STATE = 0
 		GROUP BY
 			ACC.MEMBER_ID, ACC.MEMBER_NAME, R.CONTENTS_ID, C.NAME, C.COLOR, ACC.ALL_COUNT
 		ORDER BY

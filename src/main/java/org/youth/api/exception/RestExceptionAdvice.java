@@ -143,6 +143,9 @@ public class RestExceptionAdvice {
 														Object handler,
 														Exception exception) {
 		
+		log.error(exception.toString());
+		exception.printStackTrace();
+		
 		return new ResponseEntity<>(ResponseDTO.builder()
 				.code(ResponseCode.FAIL)
 				.message(exception.getMessage())

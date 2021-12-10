@@ -53,6 +53,7 @@ public class ExcelController {
 		titleList.add(new ExcelTitleDTO("parentsPhoneNumber", "연락처2", 30));
 		titleList.add(new ExcelTitleDTO("school", "학교", 30));
 		titleList.add(new ExcelTitleDTO("grade", "학년", 10));
+		titleList.add(new ExcelTitleDTO("address", "주소", 60));
 		titleList.add(new ExcelTitleDTO("memo", "메모", 50));
 		titleList.add(new ExcelTitleDTO("regDate", "등록일", 30));
 		
@@ -67,6 +68,7 @@ public class ExcelController {
 			body.put("parentsPhoneNumber", m.getParentsPhoneNumber());
 			body.put("school", m.getSchool());
 			body.put("grade", m.getGrade());
+			body.put("address", m.getAddress());
 			body.put("memo", m.getMemo());
 			body.put("regDate", m.getRegDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 			

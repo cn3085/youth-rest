@@ -10,10 +10,12 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.validation.Valid;
 
 import org.hibernate.annotations.BatchSize;
@@ -33,6 +35,7 @@ import lombok.NoArgsConstructor;
 @Entity(name="RESERVATION")
 @Where(clause = "data_state = 'A'")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "reservationId")
+@Table(indexes = @Index(name="i_reservation", columnList = "startTime"))
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
