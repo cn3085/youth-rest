@@ -39,6 +39,7 @@ public class ReservationDTO {
 		@NotNull
 		private List<MemberDTO.MemberDetails> members = new ArrayList<>();
 		
+		private String memo;
 		
 		public long getUseMinute() {
 			return Duration.between(startTime, endTime).toMinutes();
@@ -74,6 +75,8 @@ public class ReservationDTO {
 		
 		@NotNull
 		private List<MemberDTO.MemberDetails> members = new ArrayList<>();
+		
+		private String memo;
 		
 		private LocalDateTime regDate;
 		

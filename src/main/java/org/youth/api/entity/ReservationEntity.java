@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -67,6 +68,9 @@ public class ReservationEntity extends BaseDataEntity {
 				inverseJoinColumns = @JoinColumn(name="MEMBER_ID"))
 	private Set<MemberEntity> members = new LinkedHashSet<>();
 	
+	@Lob
+	private String memo;
+	
 	
 	public void addMember(MemberEntity member) {
 		members.add(member);
@@ -91,6 +95,7 @@ public class ReservationEntity extends BaseDataEntity {
 		this.state = reservationDTO.getState();
 		this.contents = reservationDTO.getContents().toEntity();
 		this.members = reservationDTO.getMembers().stream().map(MemberDTO.MemberDetails::toEntity).collect(Collectors.toSet());
+		this.memo = reservationDTO.getMemo();
 	}
 
 	
