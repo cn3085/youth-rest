@@ -77,7 +77,6 @@ public class MemberController {
 	@PostMapping("/duplicate-phone")
 	public ResponseEntity<ResponseDTO> duplcatePhone(
 			@NotBlank(message = "핸드폰 번호는 필수값입니다.")
-//			@Pattern(regexp = "^01(?:0|1|[6-9])[.-]?(\\d{3}|\\d{4})[.-]?(\\d{4})$", message = "핸드폰 번호가 형식에 맞지 않습니다. (xxx-xxxx-xxxx)")
 			@Valid
 			String myPhoneNumber){ //TODO: 어노테이션 두개 내포 가능하도록
 		
@@ -86,6 +85,22 @@ public class MemberController {
 		return ResponseEntity.ok(ResponseDTO.builder()
 											.code(ResponseCode.SUCC)
 											.message("사용할 수 있는 핸드폰 번호입니다.")
+											.build());
+	}
+	
+	
+	
+	@PostMapping("/duplicate-name")
+	public ResponseEntity<ResponseDTO> duplcateName(
+			@NotBlank(message = "이름은 필수값입니다.")
+			@Valid
+			String name){ 
+		
+		memberService.checkAlreadyRegistedMemberName(name);
+		
+		return ResponseEntity.ok(ResponseDTO.builder()
+											.code(ResponseCode.SUCC)
+											.message("중복되지 않은 회원이름입니다.")
 											.build());
 	}
 	

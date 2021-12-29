@@ -10,4 +10,6 @@ public interface MemberRepository extends SoftDeleteRepositoryAdapter<MemberEnti
 
 	Optional<MemberEntity> findByMyPhoneNumber(String phoneNumber);
 
+	boolean existsByName(String name);
+
 }

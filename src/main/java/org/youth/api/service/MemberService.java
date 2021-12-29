@@ -2,6 +2,10 @@ package org.youth.api.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -36,12 +40,21 @@ public class MemberService{
 	
 	
 	@Transactional(readOnly = true)
-	public void checkAlreadyRegistedPhoneNumber(
-			String phoneNumber) {
+	public void checkAlreadyRegistedPhoneNumber(String phoneNumber) {
 		Optional<MemberEntity> member = memberRepository.findByMyPhoneNumber(phoneNumber);
 		
 		if(member.isPresent()) {
 			throw new AlreadyRegistedMemberException("myPhoneNumber", phoneNumber);
+		}
+	}
+	
+	
+	
+	@Transactional(readOnly = true)
+	public void checkAlreadyRegistedMemberName(@Valid String name) {
+		
+		if(memberRepository.existsByName(name)) {
+			throw new AlreadyRegistedMemberException("name", name);
 		}
 	}
 	
@@ -96,8 +109,6 @@ public class MemberService{
 		
 		return memberRepository.searchAll(searchParam).stream().map(MemberDTO.Details::of).collect(Collectors.toList()); 
 	}
-
-
 
 	
 
