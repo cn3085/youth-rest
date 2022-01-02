@@ -144,8 +144,8 @@ public class ExcelController {
 		List<Map<String, Object>> bodyList = reservationList.stream().map( r -> {
 			Map<String, Object> body = new HashMap<>();
 			body.put("reservationId", r.getReservationId());
-			body.put("startTime", r.getStartTime());
-			body.put("endTime", r.getEndTime());
+			body.put("startTime", r.getStartTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+			body.put("endTime", r.getEndTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 			body.put("state", r.getState().getValue());
 			body.put("contentsId", r.getContents().getContentsId());
 			body.put("contents", r.getContents().getName());
