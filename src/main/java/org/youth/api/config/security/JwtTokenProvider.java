@@ -4,8 +4,10 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,8 +23,16 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Component
 public class JwtTokenProvider {
-
-	private String secretKey = Base64.getEncoder().encodeToString("YOUTHCAFEAPPLICATION".getBytes());
+	
+	@Value("${jwt.key}")
+	public String key;
+	
+	public String secretKey;
+	
+	@PostConstruct
+	public void init() {
+		secretKey = Base64.getEncoder().encodeToString(key.getBytes());
+	}
 	
 	private long tokenValidTime = 60 * 60 * 1000L * 24;
 	

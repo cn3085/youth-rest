@@ -1,6 +1,7 @@
 server:
   port: 8088
 spring:
+  profiles:    include:    - key
   datasource:
     driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
     jdbcUrl: jdbc:sqlserver://localhost:1434;DatabaseName=youthcafe
