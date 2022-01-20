@@ -36,3 +36,5 @@ build/
 static/
 static/css
 logs/
+
+application-key.yml
