@@ -3,6 +3,9 @@ server:
 spring:
   profiles:    include:    - key
   datasource:
+#    driverClassName: com.p6spy.engine.spy.P6SpyDriver
+#    jdbcUrl: jdbc:p6spy:sqlserver://localhost:1434;DatabaseName=youthcafe
+#    url: jdbc:p6spy:sqlserver://localhost:1434;DatabaseName=youthcafe
     driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
     jdbcUrl: jdbc:sqlserver://localhost:1434;DatabaseName=youthcafe
     url: jdbc:sqlserver://localhost:1434;DatabaseName=youthcafe
@@ -34,6 +37,7 @@ logging:
   config: classpath:log4j2.xml
   level:
     p6spy: info
+reservation_data_expire_day: 365
 ---
 spring:
   config:
@@ -42,8 +46,8 @@ spring:
         - dev
   datasource:
     driverClassName: com.p6spy.engine.spy.P6SpyDriver
-    jdbcUrl: jdbc:p6spy:sqlserver://15.165.67.152:1433;DatabaseName=shinsegae_test
-    url: jdbc:p6spy:sqlserver://15.165.67.152:1433;DatabaseName=shinsegae_test
+    jdbcUrl: jdbc:p6spy:sqlserver://localhost;DatabaseName=youthcafe
+    url: jdbc:p6spy:sqlserver://localhost;DatabaseName=youthcafe
     username: sa
     password: sellic77&&
 #  datasource:

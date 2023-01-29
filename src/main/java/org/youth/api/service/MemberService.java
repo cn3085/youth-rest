@@ -41,9 +41,9 @@ public class MemberService{
 	
 	@Transactional(readOnly = true)
 	public void checkAlreadyRegistedPhoneNumber(String phoneNumber) {
-		Optional<MemberEntity> member = memberRepository.findByMyPhoneNumber(phoneNumber);
+		List<MemberEntity> member = memberRepository.findByMyPhoneNumber(phoneNumber);
 		
-		if(member.isPresent()) {
+		if(!member.isEmpty()) {
 			throw new AlreadyRegistedMemberException("myPhoneNumber", phoneNumber);
 		}
 	}
@@ -62,9 +62,9 @@ public class MemberService{
 	
 	@Transactional(readOnly = true)
 	public void checkAlreadyRegistedPhoneNumber(String phoneNumber, MemberEntity me) {
-		Optional<MemberEntity> member = memberRepository.findByMyPhoneNumber(phoneNumber);
+		List<MemberEntity> member = memberRepository.findByMyPhoneNumber(phoneNumber);
 		
-		if(member.isPresent() && !member.get().equals(me)) {
+		if(member.stream().filter(m -> !m.equals(me)).count() > 0) {
 			throw new AlreadyRegistedMemberException("myPhoneNumber", phoneNumber);
 		}
 	}

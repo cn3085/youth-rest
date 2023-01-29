@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,8 +30,10 @@ import org.youth.api.exception.reservation.ReservationRestrictContentsException;
 import org.youth.api.repository.ReservationRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class ReservationService {
 	
@@ -38,6 +41,9 @@ public class ReservationService {
 	private final ContentsService contentsService;
 	private final MemberService memberService;
 	private final SettingService settingService;
+	
+	@Value("${reservation_data_expire_day}")
+	private int reservationDataExpireDay;
 
 	
 	@Transactional(readOnly = true)
@@ -99,6 +105,19 @@ public class ReservationService {
 		ReservationEntity reservation = getReservationDetails(reservationId);
 		reservation.delete();
 		reservationRepository.delete(reservation);
+	}
+	
+	
+	@Transactional(rollbackFor = Exception.class)
+	public void deleteExpireDate() {
+		LocalDate beforeDate = LocalDate.now().minusDays(reservationDataExpireDay);
+		
+		log.info("delete older than {}", beforeDate);
+		
+		List<ReservationEntity> reservationList = reservationRepository.findByRegDateLessThan(LocalDateTime.of(beforeDate, LocalTime.MAX));
+		reservationRepository.deleteInBatch(reservationList);
+		
+		log.info("delete complete for {}", reservationList.size());
 	}
 	
 	
