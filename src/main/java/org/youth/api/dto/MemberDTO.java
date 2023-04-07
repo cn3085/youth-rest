@@ -36,10 +36,8 @@ public class MemberDTO {
 		@NotNull(message = "생일은 필수값입니다.")
 		private LocalDate birth;
 
-		@Pattern(regexp = "^01(?:0|1|[6-9])[.-]?(\\d{3}|\\d{4})[.-]?(\\d{4})$", message = "핸드폰 번호가 형식에 맞지 않습니다. (xxx-xxxx-xxxx)")
 		private String myPhoneNumber;
 		
-		@Pattern(regexp = "^01(?:0|1|[6-9])[.-]?(\\d{3}|\\d{4})[.-]?(\\d{4})$", message = "핸드폰 번호가 형식에 맞지 않습니다. (xxx-xxxx-xxxx)")
 		private String parentsPhoneNumber;
 		
 		private String address;
